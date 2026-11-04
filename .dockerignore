@@ -1,0 +1,14 @@
+.git
+.github
+node_modules
+dist
+.venv
+app/.venv
+storage
+*.db
+.env
+.env.*
+pics
+README.MD
+DEPLOYMENT.md
+MIGRATION_SUMMARY.md

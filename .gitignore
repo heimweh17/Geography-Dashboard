@@ -43,6 +43,8 @@ build/
 .pytest_cache/
 .coverage
 htmlcov/
+.terraform/
+**/.terraform/
 .env
 .env.local
 .env.*.local

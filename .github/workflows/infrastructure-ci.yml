@@ -1,0 +1,35 @@
+name: infrastructure-ci
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - infra/**
+      - .github/workflows/infrastructure-ci.yml
+  pull_request:
+    branches: [main]
+    paths:
+      - infra/**
+      - .github/workflows/infrastructure-ci.yml
+
+jobs:
+  validate-kubernetes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-kubectl@v4
+      - run: kubectl kustomize infra/kubernetes/overlays/local > /dev/null
+      - run: kubectl kustomize infra/kubernetes/monitoring > /dev/null
+      - run: kubectl kustomize infra/kubernetes/overlays/ai > /dev/null
+
+  validate-terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/terraform/aws-bootstrap
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform fmt -check -recursive
+      - run: terraform init -backend=false
+      - run: terraform validate

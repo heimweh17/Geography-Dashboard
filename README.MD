@@ -129,6 +129,10 @@ To restore it, deploy the AI service, configure its Gemini credentials, and set 
 
 The deployed frontend and API live in separate repositories. Start the backend first, then point the frontend at it.
 
+## Local platform environment
+
+The [`infra/`](infra/README.md) directory adds a cost-contained local platform environment without changing the public Vercel, Render, or Neon deployment. It includes kind Kubernetes manifests, an Alembic migration job, Prometheus/Grafana observability resources, GitHub Actions validation, and an optional Terraform AWS ECR bootstrap module.
+
 ### 1. Run the API
 
 ```powershell

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
@@ -14,7 +15,7 @@ function App() {
   const { user } = useAuth();
   
   // Map state
-  const [city, setCity] = useState('Orlando, FL');
+  const [, setCity] = useState('Orlando, FL');
   const [coordinates, setCoordinates] = useState([28.5383, -81.3792]);
   const [amenities, setAmenities] = useState(['restaurant']);
   const [radius, setRadius] = useState(1500);
@@ -47,7 +48,7 @@ function App() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => setUserLocation([pos.coords.latitude, pos.coords.longitude]),
-        (err) => console.log('Location access denied')
+        () => console.log('Location access denied')
       );
     }
     loadData(coordinates[0], coordinates[1], amenities, radius, null);

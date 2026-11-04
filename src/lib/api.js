@@ -1,6 +1,5 @@
-export const API_BASE = import.meta.env.PROD
-	? 'https://gdashboardbackend.onrender.com'
-	: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+export const API_BASE = import.meta.env.VITE_API_BASE_URL
+	|| (import.meta.env.PROD ? 'https://gdashboardbackend.onrender.com' : 'http://localhost:8000');
 
 const buildAuthHeaders = (token) => ({
 	Authorization: `Bearer ${token}`,
