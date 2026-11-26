@@ -1,0 +1,962 @@
+{
+  "asOf": "2026-11-26",
+  "center": [
+    28.5383,
+    -81.3792
+  ],
+  "radius": 1500,
+  "elements": [
+    {
+      "type": "node",
+      "id": 940666495,
+      "lat": 28.5416464,
+      "lon": -81.3786954,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:direction": "South",
+        "addr:housenumber": "19",
+        "addr:state": "FL",
+        "addr:street": "South Orange Avenue",
+        "amenity": "restaurant",
+        "name": "Ichiban"
+      }
+    },
+    {
+      "type": "node",
+      "id": 940689499,
+      "lat": 28.5432939,
+      "lon": -81.3789239,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:direction": "North",
+        "addr:housenumber": "63",
+        "addr:state": "FL",
+        "addr:street": "North Orange Avenue",
+        "amenity": "restaurant",
+        "name": "Fat Daddy's Grill"
+      }
+    },
+    {
+      "type": "node",
+      "id": 940689500,
+      "lat": 28.5433998,
+      "lon": -81.3789261,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:direction": "North",
+        "addr:housenumber": "65",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "North Orange Avenue",
+        "amenity": "restaurant",
+        "contact:facebook": "jamengorlando",
+        "contact:instagram": "jameng_orlando",
+        "email": "wandcgroup@hotmail.com",
+        "name": "Jam'Eng Restaurant",
+        "opening_hours": "Mo-Su 11:00-04:00",
+        "phone": "+14072864045;+17185010759"
+      }
+    },
+    {
+      "type": "node",
+      "id": 940735085,
+      "lat": 28.5469915,
+      "lon": -81.3789674,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:direction": "North",
+        "addr:housenumber": "373",
+        "addr:state": "FL",
+        "addr:street": "North Orange Avenue",
+        "air_conditioning": "yes",
+        "amenity": "restaurant",
+        "cuisine": "italian",
+        "delivery": "yes",
+        "name": "Fratelli's Italian Restaurant",
+        "opening_hours": "Mo-Fr 10:00-20:00",
+        "phone": "+1-407-422-5500",
+        "takeaway": "yes",
+        "website": "https://getsauce.com/order/site/fratellis-italian-restaurant"
+      }
+    },
+    {
+      "type": "node",
+      "id": 940735090,
+      "lat": 28.5469476,
+      "lon": -81.3789674,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:direction": "North",
+        "addr:housenumber": "371",
+        "addr:state": "FL",
+        "addr:street": "North Orange Avenue",
+        "amenity": "restaurant"
+      }
+    },
+    {
+      "type": "node",
+      "id": 940735101,
+      "lat": 28.5464163,
+      "lon": -81.3789732,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:direction": "North",
+        "addr:housenumber": "341",
+        "addr:state": "FL",
+        "addr:street": "North Orange Avenue",
+        "amenity": "restaurant",
+        "cuisine": "asian",
+        "name": "Empire Szechuan",
+        "opening_hours": "Mo-Th 10:00-22:00; Fr 10:00-23:00; Sa 11:00-23:00; Su 12:00-22:00",
+        "website": "https://empireszechuanfltogo.com/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 1983396970,
+      "lat": 28.5434445,
+      "lon": -81.3786838,
+      "tags": {
+        "amenity": "restaurant",
+        "cuisine": "mexican",
+        "name": "Gringos Locos"
+      }
+    },
+    {
+      "type": "node",
+      "id": 2854284907,
+      "lat": 28.5413948,
+      "lon": -81.3781243,
+      "tags": {
+        "addr:housenumber": "43",
+        "addr:street": "Pine Street",
+        "amenity": "restaurant",
+        "name": "Shakai",
+        "operator": "japanese",
+        "website": "https://shakaiorlando.com/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 3059667206,
+      "lat": 28.5411166,
+      "lon": -81.3701216,
+      "tags": {
+        "addr:housename": "Sanctuary",
+        "addr:housenumber": "100",
+        "addr:neighborhood": "South Eola",
+        "addr:postcode": "32801",
+        "addr:street": "Eola Drive",
+        "amenity": "restaurant",
+        "check_date": "2025-12-24",
+        "cuisine": "american",
+        "name": "The Stubborn Mule",
+        "opening_hours": "Mo-Th 11:00-22:00; Fr-Sa 11:00-23:00; Su 11:00-21:00",
+        "phone": "+1-407-730-3400",
+        "website": "https://www.thestubbornmuleorlando.com/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 3417504542,
+      "lat": 28.54048,
+      "lon": -81.3793243,
+      "tags": {
+        "addr:direction": "West",
+        "addr:housenumber": "17",
+        "addr:street": "Church Street",
+        "amenity": "restaurant",
+        "name": "KRES CHOPHOUSE",
+        "name:it": "Kres Chophpuse",
+        "wheelchair": "limited"
+      }
+    },
+    {
+      "type": "node",
+      "id": 4026646275,
+      "lat": 28.5406553,
+      "lon": -81.3776407,
+      "tags": {
+        "amenity": "restaurant",
+        "name": "Le Gourmet Break"
+      }
+    },
+    {
+      "type": "node",
+      "id": 4142734111,
+      "lat": 28.5480799,
+      "lon": -81.3765471,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "411",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "Magnolia Avenue",
+        "amenity": "restaurant",
+        "name": "City Diner",
+        "opening_hours": "Mo-Fr 06:00-18:00; Sa,Su 06:00-16:00",
+        "website": "http://www.citydinerorlando.com"
+      }
+    },
+    {
+      "type": "node",
+      "id": 4892456025,
+      "lat": 28.5407054,
+      "lon": -81.3701014,
+      "tags": {
+        "addr:housenumber": "100",
+        "addr:neighborhood": "South Eola",
+        "addr:street": "South Eola Drive",
+        "amenity": "restaurant",
+        "cuisine": "oriental;thai;sushi",
+        "name": "Neveyah Sushi & Thai",
+        "opening_hours": "Mo-Su 11:00-15:00, 17:00-21:30"
+      }
+    },
+    {
+      "type": "node",
+      "id": 5148636321,
+      "lat": 28.5453428,
+      "lon": -81.3773696,
+      "tags": {
+        "addr:housenumber": "231",
+        "addr:street": "Magnolia Avenue",
+        "amenity": "restaurant",
+        "cuisine": "korean",
+        "name": "The Neighborhood Eatery",
+        "opening_hours": "Mo-Fr 11:00-19:00; Sa 11:00-14:30",
+        "website": "https://www.orl-eats.com"
+      }
+    },
+    {
+      "type": "node",
+      "id": 5148636322,
+      "lat": 28.5397141,
+      "lon": -81.3794141,
+      "tags": {
+        "addr:housenumber": "250",
+        "addr:street": "South Orange Avenue",
+        "amenity": "restaurant",
+        "name": "Latin Square Cuisine"
+      }
+    },
+    {
+      "type": "node",
+      "id": 5657077921,
+      "lat": 28.5415729,
+      "lon": -81.3787592,
+      "tags": {
+        "amenity": "restaurant",
+        "name": "pizzas"
+      }
+    },
+    {
+      "type": "node",
+      "id": 8630229407,
+      "lat": 28.5412274,
+      "lon": -81.3779155,
+      "tags": {
+        "amenity": "restaurant",
+        "name": "Napasorn Thai Restaurant",
+        "payment:bitcoincash": "yes",
+        "website": "https://www.ordernapasornthaiorlando.com"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9136300917,
+      "lat": 28.5429645,
+      "lon": -81.3716162,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "431",
+        "addr:neighborhood": "South Eola",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "East Central Blvd",
+        "addr:unit": "B",
+        "amenity": "restaurant",
+        "cuisine": "american;burger",
+        "name": "World of Beer",
+        "opening_hours": "Mo-Th 11:00-23:00; Fr-Sa 11:00-00:00",
+        "phone": "+1-407-270-5541",
+        "website": "https://worldofbeer.com/locations/downtown-orlando/",
+        "wheelchair": "yes"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9566722057,
+      "lat": 28.5424166,
+      "lon": -81.3725204,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "407",
+        "addr:neighborhood": "South Eola",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "East Central Boulevard",
+        "amenity": "restaurant",
+        "cuisine": "american;sushi",
+        "name": "Osphere Neighborhood Grill and Bar",
+        "phone": "+1-407-203-4527",
+        "website": "https://ospheregrillbar.com/",
+        "wheelchair": "yes"
+      }
+    },
+    {
+      "type": "node",
+      "id": 10774345281,
+      "lat": 28.5492281,
+      "lon": -81.3793171,
+      "tags": {
+        "amenity": "restaurant",
+        "check_date": "2023-03-30",
+        "cuisine": "noodle",
+        "name": "Takumi Ramen"
+      }
+    },
+    {
+      "type": "node",
+      "id": 10796673436,
+      "lat": 28.542462,
+      "lon": -81.3691196,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "621",
+        "addr:neighborhood": "South Eola",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "E Central Boulevard",
+        "air_conditioning": "yes",
+        "amenity": "restaurant",
+        "bar": "yes",
+        "cuisine": "japanese;sushi",
+        "delivery": "yes",
+        "name": "Totoya Sushi Lounge",
+        "opening_hours": "Mo-Th 11:30-14:45,16:30-22:00, Fr 11:30-14:45,16:30-23:00, Sa 12:00-23:00, Su 12:00-22:00",
+        "outdoor_seating": "yes",
+        "phone": "+1-407-930-2002",
+        "toilets": "yes",
+        "website": "https://ootoyasushilounge.com",
+        "wheelchair": "yes"
+      }
+    },
+    {
+      "type": "node",
+      "id": 11006848805,
+      "lat": 28.540024,
+      "lon": -81.3803294,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "54",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "West Church Street",
+        "addr:unit": "141",
+        "amenity": "restaurant",
+        "check_date": "2025-04-29",
+        "cuisine": "mexican",
+        "name": "Birria1983",
+        "opening_hours": "Su-Fr 11:00-22:00; Sa 18:00-22:00",
+        "phone": "+1-407-250-5924",
+        "website": "https://orlandobirria.com"
+      }
+    },
+    {
+      "type": "node",
+      "id": 11006916178,
+      "lat": 28.540745,
+      "lon": -81.3783816,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "145",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "South Orange Avenue",
+        "amenity": "restaurant",
+        "cuisine": "korean",
+        "name": "Nifty's Korean BBQ & Ramen",
+        "opening_hours": "Mo-Th 11:00-19:00; Fr 11:00-20:00; Sa 12:00-20:00; Su 12:00-19:00",
+        "phone": "+1-407-868-9259",
+        "website": "https://niftykoreanbbqandramen.square.site"
+      }
+    },
+    {
+      "type": "node",
+      "id": 11006935745,
+      "lat": 28.5400676,
+      "lon": -81.3791943,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "222",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "South Orange Avenue",
+        "amenity": "restaurant",
+        "cuisine": "mexican",
+        "name": "Solita Tacos & Margaritas",
+        "opening_hours": "Mo-Fr 11:00-23:00; Sa-Su 09:00-23:00",
+        "phone": "+1-407-698-4161",
+        "website": "https://solitatacos.com"
+      }
+    },
+    {
+      "type": "node",
+      "id": 11007005531,
+      "lat": 28.5410841,
+      "lon": -81.3696643,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "101",
+        "addr:neighborhood": "South Eola",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "South Eola Drive",
+        "addr:unit": "103",
+        "air_conditioning": "yes",
+        "amenity": "restaurant",
+        "bar": "yes",
+        "cuisine": "american",
+        "delivery": "yes",
+        "name": "RusTeak",
+        "opening_hours": "Tu-Th 11:00-22:00; Fr-Sa 11:00-23:00; Su 10:30-14:30",
+        "outdoor_seating": "yes",
+        "phone": "+1-407-601-5219",
+        "takeaway": "yes",
+        "toilets": "yes",
+        "website": "https://rusteakthorntonpark.com"
+      }
+    },
+    {
+      "type": "node",
+      "id": 11007014250,
+      "lat": 28.5424937,
+      "lon": -81.3686536,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "629",
+        "addr:neighborhood": "South Eola",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "East Central Boulevard",
+        "amenity": "restaurant",
+        "cuisine": "american;italian",
+        "name": "Osteria Ester",
+        "opening_hours": "Tu-Sa 17:00-22:00; Su 11:00-16:00",
+        "phone": "+1-407-203-3577",
+        "website": "https://www.osteriaester.com/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 11007021201,
+      "lat": 28.5427212,
+      "lon": -81.368628,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "8",
+        "addr:neighborhood": "South Eola",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "North Summerlin Avenue",
+        "air_conditioning": "yes",
+        "amenity": "restaurant",
+        "brand": "JINYA Ramen Bar",
+        "brand:wikidata": "Q16997755",
+        "cuisine": "ramen",
+        "delivery": "yes",
+        "name": "JINYA Ramen Bar",
+        "opening_hours": "Mo-Su 11:00-22:00",
+        "phone": "+1-407-704-1825",
+        "short_name": "JINYA",
+        "toilets": "yes",
+        "website": "https://www.jinyaramenbar.com"
+      }
+    },
+    {
+      "type": "node",
+      "id": 12007596322,
+      "lat": 28.5258737,
+      "lon": -81.3762856,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "1315",
+        "addr:postcode": "32806",
+        "addr:state": "FL",
+        "addr:street": "South Orange Avenue",
+        "air_conditioning": "yes",
+        "amenity": "restaurant",
+        "bar": "yes",
+        "check_date": "2025-12-24",
+        "cuisine": "american",
+        "delivery": "yes",
+        "level": "1",
+        "name": "Delaney's Tavern",
+        "opening_hours": "Su-Th 07:30-21:30; Fr-Sa 07:30-22:30",
+        "outdoor_seating": "yes",
+        "payment:cash": "yes",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "phone": "+1-407-849-0801",
+        "takeaway": "yes",
+        "toilets": "yes",
+        "website": "https://eatdt.com"
+      }
+    },
+    {
+      "type": "node",
+      "id": 12109603877,
+      "lat": 28.543809,
+      "lon": -81.3686594,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "100",
+        "addr:neighborhood": "South Eola",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "North Summerlin Ave",
+        "amenity": "restaurant",
+        "cuisine": "italian;pizza",
+        "name": "Anthony's Pizza",
+        "opening_hours": "Mo-Th 11:00-21:00; Fr-Sa 11:00-22:00",
+        "phone": "+1-407-648-0009",
+        "website": "https://www.anthonyspizza.com/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 12109603879,
+      "lat": 28.5449036,
+      "lon": -81.3750338,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "211",
+        "addr:neighborhood": "South Eola",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "Eola Pkwy",
+        "amenity": "restaurant",
+        "bar": "yes",
+        "cuisine": "american;burger;sandwich;salad",
+        "name": "Relax Grill",
+        "opening_hours": "Mo-We 16:00-21:30; Th 11:30-22:00; Fr-Sa 11:30-22:30, Su 11:30-21:30",
+        "outdoor_seating": "yes",
+        "phone": "+1-407-425-8440",
+        "website": "https://relaxgrill.com/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 12109603882,
+      "lat": 28.5421404,
+      "lon": -81.3715638,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "430",
+        "addr:neighborhood": "South Eola",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "East Central Blvd",
+        "amenity": "restaurant",
+        "name": "Eola Wine Company",
+        "opening_hours": "Mo-Th 16:00-22:00; Fr 16:00-23:00; Sa 12:00-23:00; Su 12:00-22:00",
+        "phone": "+1-407-481-9100",
+        "website": "https://www.eolawinecompany.com/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 12109603885,
+      "lat": 28.5421411,
+      "lon": -81.3721735,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "404",
+        "addr:neighborhood": "South Eola",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "East Central Blvd",
+        "addr:unit": "102",
+        "amenity": "restaurant",
+        "cuisine": "pizza",
+        "name": "Pizza@ Lake Eola",
+        "opening_hours": "Mo-Th 11:00-23:00; Fr-Sa 11:00-03:00; Su 14:00-22:00",
+        "phone": "+1-407-250-6592",
+        "website": "https://www.pizza-at.com/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 12798588818,
+      "lat": 28.5399687,
+      "lon": -81.3802388,
+      "tags": {
+        "amenity": "restaurant",
+        "changing_table": "yes",
+        "check_date": "2025-04-29",
+        "cuisine": "burger",
+        "highchair": "yes",
+        "name": "The BAO Spot",
+        "outdoor_seating": "yes",
+        "source": "survey",
+        "toilets": "yes",
+        "toilets:wheelchair": "yes",
+        "wheelchair": "yes"
+      }
+    },
+    {
+      "type": "node",
+      "id": 13401885771,
+      "lat": 28.546457,
+      "lon": -81.3792897,
+      "tags": {
+        "addr:housenumber": "342",
+        "addr:postcode": "32801",
+        "addr:street": "North Orange Avenue",
+        "amenity": "restaurant",
+        "check_date": "2025-12-24",
+        "contact:instagram": "https://www.instagram.com/HueyMagoos",
+        "cuisine": "chicken",
+        "name": "Huey Magoo's Chicken Tenders",
+        "opening_hours": "Mo-Fr 10:00-20:00; Sa-Su 12:00-19:00",
+        "payment:cash": "yes",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "phone": "+1 407-640-6064",
+        "website": "https://hueymagoos.com/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 13588623896,
+      "lat": 28.5473543,
+      "lon": -81.3799391,
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "390",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "North Orange Avenue",
+        "addr:unit": "110",
+        "amenity": "restaurant",
+        "cuisine": "greek",
+        "name": "Acropolis Greek Tarvena",
+        "phone": "+1-407-286-4008",
+        "website": "https://acropolistaverna.com/orlando/",
+        "website:menu": "https://acropolistaverna.com/orlando-menu/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 13822234582,
+      "lat": 28.5434352,
+      "lon": -81.3794256,
+      "tags": {
+        "air_conditioning": "yes",
+        "amenity": "restaurant",
+        "cuisine": "pizza",
+        "name": "Planet Pizza",
+        "opening_hours": "Th-Su 17:00-03:00",
+        "phone": "+1-407-650-8859",
+        "website": "https://planetpizzaorlando.com"
+      }
+    },
+    {
+      "type": "node",
+      "id": 14190883701,
+      "lat": 28.5413866,
+      "lon": -81.3777653,
+      "tags": {
+        "addr:housenumber": "63",
+        "addr:street": "East Pine Street",
+        "amenity": "restaurant",
+        "cuisine": "pizza",
+        "name": "Nuri's Pizza"
+      }
+    },
+    {
+      "type": "node",
+      "id": 14356238701,
+      "lat": 28.5458034,
+      "lon": -81.3785104,
+      "tags": {
+        "addr:housenumber": "27",
+        "addr:postcode": "32801",
+        "addr:street": "East Robinson Street",
+        "amenity": "restaurant",
+        "name": "Jiang's Kitchen",
+        "opening_hours": "Mo-Th 11:30-21:30; Fr-Sa 11:30-22:30; Su 12:00-21:30",
+        "website": "https://jiangkitchen.com/",
+        "website:menu": "https://jiangkitchen.com/menu"
+      }
+    },
+    {
+      "type": "node",
+      "id": 14368755001,
+      "lat": 28.5424579,
+      "lon": -81.369206,
+      "tags": {
+        "addr:housenumber": "617",
+        "addr:postcode": "32801",
+        "addr:street": "East Central Boulevard",
+        "amenity": "restaurant",
+        "name": "F&D Cantina",
+        "opening_hours": "Su 11:00-21:00; Mo 12:00-21:00; Tu-Th 12:00-22:00; Fr 12:00-22:30; Sa 11:00-22:30",
+        "phone": "+1-407-807-6488",
+        "website": "https://www.fdcantina.com/",
+        "website:menu": "https://www.fdcantina.com/thornton-park#menu?location=thornton-park-orlando-florida"
+      }
+    },
+    {
+      "type": "node",
+      "id": 14368772501,
+      "lat": 28.5455633,
+      "lon": -81.3697895,
+      "tags": {
+        "addr:housenumber": "227",
+        "addr:postcode": "32801",
+        "addr:street": "Eola Drive",
+        "amenity": "restaurant",
+        "email": "info@outpostorl.com",
+        "name": "Outpost",
+        "opening_hours": "Mo-Th 11:00-22:00; Fr-Sa 11:00-00:00; Su 11:00-20:00",
+        "phone": "+1-407-203-0447",
+        "website": "https://www.outpostorl.com/",
+        "website:menu": "https://www.outpostorl.com/menu"
+      }
+    },
+    {
+      "type": "node",
+      "id": 14368818401,
+      "lat": 28.5423901,
+      "lon": -81.3721746,
+      "tags": {
+        "addr:housenumber": "415",
+        "addr:postcode": "32801",
+        "addr:street": "East Central Boulevard",
+        "amenity": "restaurant",
+        "name": "Evergreen",
+        "opening_hours": "Mo-Th 07:00-21:00; Fr-Su 07:00-22:00",
+        "website": "https://www.evergreen-juice.com/"
+      }
+    },
+    {
+      "type": "node",
+      "id": 14371636101,
+      "lat": 28.5403489,
+      "lon": -81.3720759,
+      "tags": {
+        "addr:housenumber": "420",
+        "addr:postcode": "32801",
+        "addr:street": "East Church Street",
+        "amenity": "restaurant",
+        "diet:vegan": "yes",
+        "name": "Earthy Picks",
+        "opening_hours": "Tu-Fr 12:00-20:00; Sa-Su 11:00-19:00",
+        "phone": "+1-407-270-6059",
+        "website": "https://www.earthypicks.com/",
+        "website:menu": "https://www.earthypicks.com/menu-1"
+      }
+    },
+    {
+      "type": "node",
+      "id": 14371639501,
+      "lat": 28.5403426,
+      "lon": -81.3724529,
+      "tags": {
+        "addr:housenumber": "420",
+        "addr:postcode": "32801",
+        "addr:street": "East Church Street",
+        "amenity": "restaurant",
+        "cuisine": "sushi",
+        "name": "The Escobar Kitchen",
+        "opening_hours": "We-Th 14:00-21:00; Fr-Sa 14:00-22:00; Su 12:00-20:00",
+        "phone": "+1-407-730-8350",
+        "website": "https://theescobarkitchen.com/",
+        "website:menu": "https://theescobarkitchen.com/menu"
+      }
+    },
+    {
+      "type": "node",
+      "id": 14378774601,
+      "lat": 28.5437762,
+      "lon": -81.3673684,
+      "tags": {
+        "addr:housenumber": "808",
+        "addr:postcode": "32801",
+        "addr:street": "East Washington Street",
+        "amenity": "restaurant",
+        "cuisine": "burger",
+        "email": "theclassicthorntonpark@gmail.com",
+        "name": "The Classic",
+        "opening_hours": "Mo-Fr 11:00-02:00; Sa-Su 09:00-02:00",
+        "phone": "+1-407-730-5646",
+        "website": "https://theclassicthorntonpark.com/",
+        "website:menu": "https://theclassicthorntonpark.com/orlando-thornton-park-district-the-classic-thornton-park-food-menu"
+      }
+    },
+    {
+      "type": "node",
+      "id": 14382179101,
+      "lat": 28.5423869,
+      "lon": -81.3719872,
+      "tags": {
+        "addr:housenumber": "417",
+        "addr:postcode": "32801",
+        "addr:street": "East Central Boulevard",
+        "amenity": "restaurant",
+        "cuisine": "pizza",
+        "name": "Metro Espresso",
+        "opening_hours": "Su-Th 11:00-22:00; Fr-Sa 11:00-03:00",
+        "phone": "+14074225282",
+        "website": "https://metroespressopizza.com/",
+        "website:menu": "https://metroespressopizza.com/menu"
+      }
+    },
+    {
+      "type": "node",
+      "id": 14382266101,
+      "lat": 28.5408807,
+      "lon": -81.3782886,
+      "tags": {
+        "addr:housenumber": "151",
+        "addr:street": "South Orange Avenue",
+        "amenity": "restaurant",
+        "cuisine": "asian;sushi",
+        "name": "Bento",
+        "website": "https://eatatbento.com/locations/orlando-downtown"
+      }
+    },
+    {
+      "type": "node",
+      "id": 14382269201,
+      "lat": 28.5408807,
+      "lon": -81.3782886,
+      "tags": {
+        "addr:housenumber": "151",
+        "addr:postcode": "32801",
+        "addr:street": "South Orange Avenue",
+        "amenity": "restaurant",
+        "cuisine": "asian;sushi",
+        "name": "Bento",
+        "opening_hours": "Mo-Th 11:00-22:00; Fr 11:00-23:00; Sa 12:00-23:00; Su 12:00-22:00",
+        "phone": "+1-407-999-8989",
+        "website": "https://eatatbento.com/locations/orlando-downtown"
+      }
+    },
+    {
+      "type": "way",
+      "id": 80581099,
+      "center": {
+        "lat": 28.5405252,
+        "lon": -81.3813707
+      },
+      "nodes": [
+        940043356,
+        940043357,
+        940042952,
+        940042953,
+        940042959,
+        940042960,
+        940043356
+      ],
+      "tags": {
+        "amenity": "restaurant",
+        "building": "yes",
+        "height": "14",
+        "name": "Ceviche Tapas Bar & Restaurant",
+        "roof:height": "4",
+        "roof:shape": "gabled"
+      }
+    },
+    {
+      "type": "way",
+      "id": 80581100,
+      "center": {
+        "lat": 28.5404945,
+        "lon": -81.3815272
+      },
+      "nodes": [
+        833677318,
+        940043356,
+        940042960,
+        940042961,
+        940042962,
+        940042963,
+        833677318
+      ],
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:direction": "West",
+        "addr:housenumber": "129",
+        "addr:state": "FL",
+        "addr:street": "Church Street",
+        "amenity": "restaurant",
+        "building": "yes",
+        "height": "12",
+        "name": "Mojo Bar and Grill",
+        "note": "opening fall 2010"
+      }
+    },
+    {
+      "type": "way",
+      "id": 80668822,
+      "center": {
+        "lat": 28.541655,
+        "lon": -81.3772484
+      },
+      "nodes": [
+        940872950,
+        940872944,
+        940872941,
+        940872938,
+        940872950
+      ],
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:direction": "South",
+        "addr:housenumber": "25",
+        "addr:state": "FL",
+        "addr:street": "Magnolia Avenue",
+        "amenity": "restaurant",
+        "building": "yes",
+        "cuisine": "irish",
+        "name": "The Harp Restaurant",
+        "opening_hours": "Mo-Fr 11:00-00:00; Sa 10:00-00:00; Su 10:00-23:00",
+        "website": "https://www.harpandceltpub.com/"
+      }
+    },
+    {
+      "type": "way",
+      "id": 306611107,
+      "center": {
+        "lat": 28.5434705,
+        "lon": -81.3682817
+      },
+      "nodes": [
+        3115794521,
+        3115794522,
+        3115794523,
+        3115794524,
+        3115794525,
+        3115794521
+      ],
+      "tags": {
+        "addr:city": "Orlando",
+        "addr:housenumber": "700",
+        "addr:postcode": "32801",
+        "addr:state": "FL",
+        "addr:street": "East Washington Street",
+        "amenity": "restaurant",
+        "bar": "yes",
+        "building": "yes",
+        "cuisine": "mexican",
+        "name": "June",
+        "opening_hours": "Tu-Th 17:00-22:00; Fr 17:00-23:00; Sa 16:00-23:00; Su 11:00-22:00",
+        "outdoor_seating": "yes",
+        "website": "https://www.juneorlando.com/"
+      }
+    }
+  ]
+}

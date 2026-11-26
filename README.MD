@@ -25,6 +25,8 @@ Search a city, choose one or more amenity categories, and adjust the search radi
 
 ![Interactive city amenity exploration](pics/Screenshot%202025-12-19%20175301.png)
 
+The initial Orlando view includes a dated OpenStreetMap snapshot of restaurants within 1.5 km of the city center. The map labels this snapshot while requesting live data. A successful response replaces it, including when the live result is empty. Other study areas and layer selections use their own queries. Snapshot data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), available under ODbL.
+
 ### Compare urban patterns
 
 The city comparison workflow queries the same amenity set across two study areas, then reports feature counts, density, diversity, nearest-neighbor distribution, cuisine variety, and chain versus independent business signals. Results can be exported for follow-up analysis.

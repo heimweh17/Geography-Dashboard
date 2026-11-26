@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
+import orlandoSnapshot from './assets/orlando-restaurants.json';
 import { placeCategory } from './config/mapLayers';
 import { downloadCSV } from './utlis/exportUtils';
 import React, { useState, useEffect, useRef } from 'react';
@@ -18,10 +19,11 @@ function App() {
   
   // Map state
   const [city, setCity] = useState('Orlando, FL');
-  const [coordinates, setCoordinates] = useState([28.5383, -81.3792]);
+  const [coordinates, setCoordinates] = useState(orlandoSnapshot.center);
   const [amenities, setAmenities] = useState(['restaurant']);
-  const [radius, setRadius] = useState(1500);
-  const [data, setData] = useState([]);
+  const [radius, setRadius] = useState(orlandoSnapshot.radius);
+  const [data, setData] = useState(orlandoSnapshot.elements);
+  const [snapshotDate, setSnapshotDate] = useState(orlandoSnapshot.asOf);
   const queryVersion = useRef(0);
   const [loading, setLoading] = useState(false);
   const [dataError, setDataError] = useState('');
@@ -69,8 +71,11 @@ function App() {
 
   const loadData = async (lat, lon, amenityList, rad, poly = null) => {
     const version = ++queryVersion.current;
+    const useSnapshot = !poly && lat === orlandoSnapshot.center[0] && lon === orlandoSnapshot.center[1]
+      && rad === orlandoSnapshot.radius && amenityList.length === 1 && amenityList[0] === 'restaurant';
     setLoading(true);
-    setData([]);
+    setSnapshotDate(useSnapshot ? orlandoSnapshot.asOf : null);
+    setData(useSnapshot ? orlandoSnapshot.elements : []);
     setRouteData(null);
     setCategoryFilter(null);
     setSelectedPlace(null);
@@ -78,10 +83,13 @@ function App() {
 
     try {
       const results = await fetchAmenities(lat, lon, amenityList, rad, poly);
-      if (version === queryVersion.current) setData(results);
+      if (version === queryVersion.current) {
+        setData(results);
+        setSnapshotDate(null);
+      }
     } catch (error) {
       console.error(error);
-      if (version === queryVersion.current) setDataError('Map data is temporarily unavailable. Please try again in a moment.');
+      if (!useSnapshot && version === queryVersion.current) setDataError('Map data is temporarily unavailable. Please try again in a moment.');
     } finally {
       if (version === queryVersion.current) setLoading(false);
     }
@@ -118,6 +126,7 @@ function App() {
     const version = ++queryVersion.current;
     setLoading(true);
     setCategoryFilter(null);
+    setSnapshotDate(null);
     setData([]);
     setRouteData(null);
     setSelectedPlace(null);
@@ -331,7 +340,7 @@ function App() {
           onRadiusChange={handleRadiusChange}
           canExport={filteredData.length > 0}
           onExport={() => downloadCSV(filteredData)}
-          loading={loading}
+          loading={loading && !snapshotDate}
           selectedAmenities={amenities}
           searchRadius={radius}
           toggleTheme={() => setIsDarkMode(!isDarkMode)}
@@ -347,7 +356,7 @@ function App() {
       <div className="flex-1 relative z-0">
         <div role="status" className="map-caption">
           <strong>{customPolygon ? 'Drawn area' : city.split(',')[0]}</strong>
-          <span>{loading ? 'Finding places…' : dataError ? 'Search unavailable' : filteredData.length + ' places'}</span>
+          <span>{snapshotDate ? filteredData.length + ' places · OSM ' + snapshotDate : loading ? 'Finding places…' : dataError ? 'Search unavailable' : filteredData.length + ' places'}</span>
         </div>
 
         {dataError && !loading && (
