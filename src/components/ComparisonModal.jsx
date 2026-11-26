@@ -31,13 +31,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-const AMENITY_OPTIONS = [
-  'restaurant', 'cafe', 'bar', 'fast_food', 'pub', 'cinema', 
-  'hospital', 'clinic', 'pharmacy', 'dentist', 'school', 
-  'university', 'library', 'bank', 'atm', 'shop', 'mall', 
-  'supermarket', 'gym', 'parking', 'fuel', 'police', 
-  'fire_station', 'hotel', 'post_office', 'bus_station'
-];
+import { DATA_LAYERS, placeCategory } from '../config/mapLayers';
 
 const ComparisonModal = ({ isOpen, onClose }) => {
   const [city1Name, setCity1Name] = useState('');
@@ -147,7 +141,7 @@ const ComparisonModal = ({ isOpen, onClose }) => {
               </div>
             </div>
             <button 
-              onClick={onClose} 
+              aria-label="Close" onClick={onClose}
               className="text-blue-300 hover:text-white p-2 border border-blue-700 hover:bg-blue-800 transition-colors rounded-md"
             >
               <X size={20} />
@@ -234,7 +228,7 @@ const ComparisonModal = ({ isOpen, onClose }) => {
                 Select Amenity Types ({selectedAmenities.length} selected)
               </label>
               <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
-                {AMENITY_OPTIONS.map((amenity) => (
+                {DATA_LAYERS.map((amenity) => (
                   <button
                     key={amenity}
                     onClick={() => toggleAmenity(amenity)}
@@ -575,7 +569,7 @@ const SimpleMap = ({ center, data, radius, cityName }) => {
                   {item.tags?.name || 'Unnamed'}
                 </div>
                 <div style={{ color: '#666' }}>
-                  {item.tags?.amenity || 'Unknown type'}
+                  {placeCategory(item.tags)}
                 </div>
                 {item.tags?.cuisine && (
                   <div style={{ color: '#999' }}>

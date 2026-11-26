@@ -158,11 +158,8 @@ export async function deletePlace(token, placeId) {
 	return;
 }
 
-export async function generateAIInsight(token, analysisResult, context = null) {
-	const body = {
-		analysis_result: analysisResult,
-		context: context,
-	};
+export async function generateAIInsight(token, analysisRunId) {
+	const body = { analysis_run_id: analysisRunId };
 	const res = await fetch(`${API_BASE}/ai/insights`, {
 		method: 'POST',
 		headers: {
@@ -172,11 +169,8 @@ export async function generateAIInsight(token, analysisResult, context = null) {
 		body: JSON.stringify(body),
 	});
 	if (!res.ok) {
-		const text = await res.text();
-		if (res.status === 429) {
-			throw new Error('Weekly limit reached: 1 insight per user per 7 days. ' + text);
-		}
-		throw new Error(text || 'Failed to generate insight');
+		const problem = await res.json().catch(() => ({}));
+		throw new Error(problem.detail || 'Could not generate a summary. Try again later.');
 	}
 	return res.json();
 }

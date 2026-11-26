@@ -8,11 +8,13 @@ export const downloadCSV = (data, filename = "geo-data.csv") => {
   const csvContent = [
     headers.join(","),
     ...data.map((item) => {
-      const name = item.tags?.name ? `"${item.tags.name}"` : "Unnamed";
-      const type = item.tags?.amenity || "Unknown";
-      const lat = item.lat || item.center?.lat || "N/A";
-      const lon = item.lon || item.center?.lon || "N/A";
-      return `${name},${type},${lat},${lon}`;
+      const tags = item.tags || {};
+      const values = [tags.name || "Unnamed", tags.amenity || tags.shop || tags.tourism || "Unknown",
+        item.lat ?? item.center?.lat ?? "", item.lon ?? item.center?.lon ?? ""];
+      return values.map(value => {
+        const field = typeof value === "string" && /^[=+@\t\r-]/.test(value) ? "'" + value : String(value);
+        return '"' + field.replaceAll('"', '""') + '"';
+      }).join(",");
     }),
   ].join("\n");
   

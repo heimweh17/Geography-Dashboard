@@ -73,8 +73,8 @@ if ($EnableAI) {
         throw "Set GEMINI_API_KEY before using -EnableAI."
     }
     kubectl create secret generic geodashboard-ai-secrets --namespace $namespace --from-literal="GEMINI_API_KEY=$env:GEMINI_API_KEY" --dry-run=client -o yaml | kubectl apply -f -
-    kubectl apply -k (Join-Path $kubernetesRoot "overlays\ai")
-    kubectl rollout status deployment/ai-service --namespace $namespace --timeout=180s
+    kubectl rollout restart deployment/core-api --namespace $namespace
+    kubectl rollout status deployment/core-api --namespace $namespace --timeout=180s
 }
 
 Write-Host "GeoDashboard is available at http://localhost:8080"

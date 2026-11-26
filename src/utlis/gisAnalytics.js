@@ -1,3 +1,4 @@
+import { placeCategory } from '../config/mapLayers';
 // GIS Spatial Analysis Utilities
 
 /**
@@ -112,7 +113,7 @@ export const analyzeAmenityBreakdown = (data) => {
     const tags = item.tags || {};
     
     // Amenity type
-    const amenity = tags.amenity || 'unknown';
+    const amenity = placeCategory(tags);
     breakdown.byAmenity[amenity] = (breakdown.byAmenity[amenity] || 0) + 1;
     
     // Cuisine types

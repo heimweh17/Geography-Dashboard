@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
-import React, { useState, useEffect } from 'react';
+import { placeCategory } from './config/mapLayers';
+import { downloadCSV } from './utlis/exportUtils';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Sidebar from './components/Sidebar';
 import MapComponent from './components/MapComponent';
@@ -10,16 +12,17 @@ import SavedPlacesModal from './components/SavedPlacesModal';
 import { searchCity, fetchAmenities, fetchRoute } from './api/osmService';
 import { savePlace, isPlaceSaved } from './services/savedPlacesService';
 import { useAuth } from './contexts/AuthContext';
-import { Menu, X, Star } from 'lucide-react';
+import { Menu, Star } from 'lucide-react';
 function App() {
   const { user } = useAuth();
   
   // Map state
-  const [, setCity] = useState('Orlando, FL');
+  const [city, setCity] = useState('Orlando, FL');
   const [coordinates, setCoordinates] = useState([28.5383, -81.3792]);
   const [amenities, setAmenities] = useState(['restaurant']);
   const [radius, setRadius] = useState(1500);
   const [data, setData] = useState([]);
+  const queryVersion = useRef(0);
   const [loading, setLoading] = useState(false);
   const [dataError, setDataError] = useState('');
   const [showHeatmap, setShowHeatmap] = useState(false);
@@ -65,6 +68,7 @@ function App() {
   }, [isDarkMode]);
 
   const loadData = async (lat, lon, amenityList, rad, poly = null) => {
+    const version = ++queryVersion.current;
     setLoading(true);
     setData([]);
     setRouteData(null);
@@ -74,12 +78,12 @@ function App() {
 
     try {
       const results = await fetchAmenities(lat, lon, amenityList, rad, poly);
-      setData(results);
+      if (version === queryVersion.current) setData(results);
     } catch (error) {
       console.error(error);
-      setDataError('Map data is temporarily unavailable. Please try again in a moment.');
+      if (version === queryVersion.current) setDataError('Map data is temporarily unavailable. Please try again in a moment.');
     } finally {
-      setLoading(false);
+      if (version === queryVersion.current) setLoading(false);
     }
   };
 
@@ -87,7 +91,7 @@ function App() {
     ? data.filter((item) => {
         const tags = item.tags || {};
         
-        if (tags.amenity && tags.amenity.toLowerCase().includes(categoryFilter.toLowerCase())) {
+        if (placeCategory(tags).toLowerCase().includes(categoryFilter.toLowerCase())) {
           return true;
         }
         
@@ -111,6 +115,7 @@ function App() {
     : data;
 
   const handleCitySearch = async (cityName) => {
+    const version = ++queryVersion.current;
     setLoading(true);
     setCategoryFilter(null);
     setData([]);
@@ -119,7 +124,9 @@ function App() {
     setDataError('');
     try {
       const location = await searchCity(cityName);
+      if (version !== queryVersion.current) return;
       if (location) {
+        setShowLeftSidebar(false);
         setCity(location.display_name);
         setCoordinates([location.lat, location.lon]);
         setCustomPolygon(null);
@@ -129,9 +136,9 @@ function App() {
       }
     } catch (error) {
       console.error(error);
-      setDataError('City search is temporarily unavailable. Please try again in a moment.');
+      if (version === queryVersion.current) setDataError('City search is temporarily unavailable. Please try again in a moment.');
     } finally {
-      setLoading(false);
+      if (version === queryVersion.current) setLoading(false);
     }
   };
 
@@ -298,41 +305,32 @@ function App() {
       : `${amenities.length} layers`;
 
   return (
-    <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden bg-blue-50 dark:bg-blue-950 text-blue-900 dark:text-blue-100 font-sans">
+    <div className="flex flex-col md:flex-row h-dvh w-full overflow-hidden bg-blue-50 dark:bg-blue-950 text-blue-900 dark:text-blue-100 font-sans">
       
       {/* Mobile Toggle Buttons */}
-      <div className="md:hidden fixed top-4 left-4 right-4 z-[1000] flex justify-between gap-2">
-        <button
-          onClick={() => setShowLeftSidebar(!showLeftSidebar)}
-          className="bg-blue-600 text-white p-3 rounded-lg shadow-lg hover:bg-blue-700 transition flex items-center gap-2"
-        >
-          {showLeftSidebar ? <X size={20} /> : <Menu size={20} />}
-          <span className="text-sm font-semibold">Controls</span>
+      <nav aria-label="Workspace panels" className="mobile-tools md:hidden">
+        <button aria-expanded={showLeftSidebar} onClick={() => { setShowLeftSidebar(!showLeftSidebar); setShowRightSidebar(false); }}>
+          <Menu size={17} /> Explore
         </button>
-        
-        <button
-          onClick={() => setShowRightSidebar(!showRightSidebar)}
-          className="bg-blue-600 text-white p-3 rounded-lg shadow-lg hover:bg-blue-700 transition flex items-center gap-2"
-        >
-          <span className="text-sm font-semibold">Analytics</span>
-          {showRightSidebar ? <X size={20} /> : <Menu size={20} />}
-        </button>
-      </div>
+        <button aria-pressed={!showLeftSidebar && !showRightSidebar} onClick={() => { setShowLeftSidebar(false); setShowRightSidebar(false); }}>Map</button>
+        <button aria-expanded={showRightSidebar} onClick={() => { setShowRightSidebar(!showRightSidebar); setShowLeftSidebar(false); }}>Results</button>
+      </nav>
 
       {/* Left Sidebar */}
       <div className={`
-        fixed md:relative
+        workspace-panel fixed md:relative
         inset-y-0 left-0
         z-[999]
         w-full md:w-80
         transform transition-transform duration-300 ease-in-out
-        ${showLeftSidebar ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        ${showLeftSidebar ? 'translate-x-0' : 'invisible md:visible -translate-x-full md:translate-x-0'}
       `}>
-        <Sidebar
+        <Sidebar key={user?.id ?? "guest"}
           onSearch={handleCitySearch}
           onAmenityChange={handleAmenityChange}
           onRadiusChange={handleRadiusChange}
-          onExport={() => {}}
+          canExport={filteredData.length > 0}
+          onExport={() => downloadCSV(filteredData)}
           loading={loading}
           selectedAmenities={amenities}
           searchRadius={radius}
@@ -347,14 +345,10 @@ function App() {
 
       {/* Map Container */}
       <div className="flex-1 relative z-0">
-        {loading && (
-          <div className="absolute inset-0 bg-blue-900/80 z-50 flex items-center justify-center text-white text-xl font-bold backdrop-blur-sm">
-            <div className="bg-blue-800 border border-blue-600 p-6 rounded-md text-center">
-              <div className="animate-spin h-8 w-8 border-4 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
-              Processing Data...
-            </div>
-          </div>
-        )}
+        <div role="status" className="map-caption">
+          <strong>{customPolygon ? 'Drawn area' : city.split(',')[0]}</strong>
+          <span>{loading ? 'Finding places…' : dataError ? 'Search unavailable' : filteredData.length + ' places'}</span>
+        </div>
 
         {dataError && !loading && (
           <div className="absolute top-4 left-4 right-4 md:left-14 md:right-auto md:max-w-md z-[500] rounded-md border border-red-300 bg-red-50 p-3 text-sm text-red-800 shadow-lg">
@@ -376,14 +370,6 @@ function App() {
           onClearRoute={clearRoute}
           savedPlaceView={savedPlaceView}
         />
-
-        {!customPolygon && !routeData && (
-          <div className="hidden md:block absolute top-4 left-14 z-[400] bg-blue-100 dark:bg-blue-900 border border-blue-300 dark:border-blue-700 p-3 shadow text-xs rounded-md">
-            <div className="text-blue-900 dark:text-blue-100 font-medium">
-              Use toolbar (right) to draw search area
-            </div>
-          </div>
-        )}
 
         {/* Selected Place Popup */}
         {selectedPlace && (
@@ -496,15 +482,17 @@ function App() {
 
       {/* Right Sidebar (Analytics) */}
       <div className={`
-        fixed md:relative
+        workspace-panel fixed md:relative
         inset-y-0 right-0
         z-[999]
         w-full md:w-80
         transform transition-transform duration-300 ease-in-out
-        ${showRightSidebar ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
+        ${showRightSidebar ? 'translate-x-0' : 'invisible md:visible translate-x-full md:translate-x-0'}
       `}>
         <AnalyticsPanel
           data={filteredData}
+          loading={loading}
+          error={dataError}
           amenityLabel={amenityLabel}
           onCategoryClick={handleCategorySelect}
           activeFilter={categoryFilter}

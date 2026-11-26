@@ -30,6 +30,9 @@ spec:
                 name: geodashboard-config
             - secretRef:
                 name: geodashboard-secrets
+            - secretRef:
+                name: geodashboard-ai-secrets
+                optional: true
           resources:
             requests:
               cpu: 250m

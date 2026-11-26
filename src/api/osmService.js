@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { API_BASE } from '../lib/api';
 
-// This public Overpass instance supports browser CORS requests.
-const OVERPASS_API_URL = 'https://maps.mail.ru/osm/tools/overpass/api/interpreter';
 const OSRM_BASE_URL = 'https://router.project-osrm.org/route/v1';
 
 export const searchCity = async (cityName) => {
@@ -12,47 +10,11 @@ export const searchCity = async (cityName) => {
   return response.data;
 };
 
-// Fetches data. 
-// If `polygonCoords` is provided, it uses a polygon query.
-// If not, it uses a standard radius query.
-export const fetchAmenities = async (lat, lon, amenities, radius, polygonCoords = null) => {
-  // 支持 string 或 array
-  const list = Array.isArray(amenities) ? amenities : [amenities];
-  const amenityFilter = list.join('|');
-  const area = polygonCoords
-    ? `(poly:"${polygonCoords.map((p) => `${p.lat} ${p.lng}`).join(' ')}")`
-    : `(around:${radius},${lat},${lon})`;
-  const query = `
-    [out:json][timeout:25];
-    (
-      node["amenity"~"${amenityFilter}"]${area};
-      way["amenity"~"${amenityFilter}"]${area};
-      relation["amenity"~"${amenityFilter}"]${area};
-    );
-    out center;
-  `;
-
-  for (let attempt = 0; attempt < 2; attempt += 1) {
-    try {
-      const response = await axios.post(
-        OVERPASS_API_URL,
-        `data=${encodeURIComponent(query)}`,
-        {
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          timeout: 15000,
-        }
-      );
-      return response.data.elements;
-    } catch (error) {
-      if (attempt === 1) {
-        console.error('Error fetching amenities:', error);
-        throw error;
-      }
-
-      // Public Overpass instances occasionally shed a single request under load.
-      await new Promise((resolve) => setTimeout(resolve, 1200));
-    }
-  }
+export const fetchAmenities = async (lat, lon, amenities, radius, polygon = null) => {
+  const { data } = await axios.post(API_BASE + '/osm/amenities', {
+    lat, lon, amenities: Array.isArray(amenities) ? amenities : [amenities], radius, polygon,
+  });
+  return data.elements;
 };
 
 // Fetch route from User -> Destination using OSRM (Open Source Routing Machine)

@@ -1,3 +1,5 @@
+> Historical migration notes. Current runtime and configuration are documented in [Deployment](DEPLOYMENT.md).
+
 # Migration Summary: Supabase → Backend + SQLite → Postgres
 
 This document summarizes all changes made to migrate Saved Places from Supabase to the FastAPI backend and switch from SQLite to Postgres for production.

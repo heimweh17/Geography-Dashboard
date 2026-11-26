@@ -1,6 +1,7 @@
+import { parseFileToPoints } from '../utlis/datasetPreview';
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Search, Map, Moon, Sun, Download, Layers, X, Github, Mail, Globe, TrendingUp, ChevronDown, User, Star, Sparkles, Info } from 'lucide-react';
+import { Search, Map, Moon, Sun, Download, Layers, X, Github, Mail, Globe, TrendingUp, ChevronDown, User, Star, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../lib/api';
 import AnalysisResultsModal from './AnalysisResultsModal';
@@ -9,18 +10,14 @@ import LoginModal from './LoginModal';
 import ProfileModal from './ProfileModal';
 import AIInsightsModal from './AIInsightsModal';
 
-const DATA_LAYERS = [
-  'restaurant', 'cafe', 'bar', 'fast_food', 'pub', 'cinema', 'hospital', 'clinic',
-  'pharmacy', 'dentist', 'school', 'university', 'library', 'bank', 'atm', 'shop',
-  'mall', 'supermarket', 'gym', 'parking', 'fuel', 'police', 'fire_station', 'hotel',
-  'post_office', 'bus_station'
-];
+import { DATA_LAYERS } from '../config/mapLayers';
 
 const Sidebar = ({ 
   onSearch, 
   onAmenityChange, 
   onRadiusChange,
   onExport,
+  canExport,
   loading, 
   selectedAmenities,
   searchRadius,
@@ -48,6 +45,7 @@ const Sidebar = ({
   const [analysisError, setAnalysisError] = useState('');
   const [analysisResult, setAnalysisResult] = useState(null);
   const [isAnalysisModalOpen, setIsAnalysisModalOpen] = useState(false);
+  const [runId, setRunId] = useState(null);
   const [uploadedPoints, setUploadedPoints] = useState([]);
   const [gridCellSize, setGridCellSize] = useState(0.01);
   const [dbscanEpsKm, setDbscanEpsKm] = useState(1.0);
@@ -55,6 +53,7 @@ const Sidebar = ({
   const [categoryField, setCategoryField] = useState('category');
 
   const handleUploadClick = () => {
+    if (!isAuthed) { setShowLoginModal(true); return; }
     const input = document.getElementById('hidden-upload-input');
     if (input) input.click();
   };
@@ -68,6 +67,9 @@ const Sidebar = ({
     }
     setUploading(true);
     setUploadError('');
+    setDatasetInfo(null);
+    setAnalysisError('');
+    setRunId(null);
     setAnalysisResult(null);
     setIsAnalysisModalOpen(false);
     try {
@@ -103,6 +105,7 @@ const Sidebar = ({
       };
       const run = await api.analyzeDataset(token, datasetInfo.dataset_id, params);
       const parsed = typeof run.result_json === 'string' ? safeParseJSON(run.result_json) : run.result_json;
+      setRunId(run.id);
       setAnalysisResult(parsed || run.result_json);
       // Open modal on success
       setIsAnalysisModalOpen(true);
@@ -118,114 +121,6 @@ const Sidebar = ({
       return JSON.parse(str);
     } catch (_) {
       return null;
-    }
-  };
-
-  const parseFileToPoints = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const name = (file.name || '').toLowerCase();
-          const text = reader.result;
-          if (name.endsWith('.csv')) {
-            resolve(parseCsvPoints(String(text)));
-          } else {
-            resolve(parseGeojsonPoints(String(text)));
-          }
-        } catch (err) {
-          reject(err);
-        }
-      };
-      reader.onerror = (e) => reject(e);
-      reader.readAsText(file);
-    });
-  };
-
-  const parseCsvPoints = (text) => {
-    const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
-    if (lines.length < 2) return [];
-    const header = lines[0].split(',').map((h) => h.trim());
-    const idx = normalizeLatLonKeys(header);
-    if (!idx.lat || !idx.lon) return [];
-    const catIdx = findCategoryKey(header);
-    const points = [];
-    for (let i = 1; i < lines.length; i++) {
-      const cols = splitCsvLine(lines[i]);
-      const get = (key) => {
-        const pos = header.indexOf(key);
-        return pos >= 0 ? cols[pos] : undefined;
-      };
-      const lat = parseFloat(get(idx.lat));
-      const lon = parseFloat(get(idx.lon));
-      if (!isFinite(lat) || !isFinite(lon)) continue;
-      if (lat < -90 || lat > 90 || lon < -180 || lon > 180) continue;
-      const category = catIdx ? get(catIdx) : undefined;
-      points.push({ lat, lon, category: category || undefined });
-    }
-    return points;
-  };
-
-  const normalizeLatLonKeys = (headers) => {
-    const lower = headers.map((h) => h.trim().toLowerCase());
-    const map = {};
-    const latC = ['lat', 'latitude', 'y'];
-    const lonC = ['lon', 'lng', 'long', 'longitude', 'x'];
-    for (let i = 0; i < lower.length; i++) {
-      if (latC.includes(lower[i]) && !map.lat) map.lat = headers[i];
-      if (lonC.includes(lower[i]) && !map.lon) map.lon = headers[i];
-    }
-    return map;
-  };
-
-  const findCategoryKey = (headers) => {
-    const lower = headers.map((h) => h.trim().toLowerCase());
-    const idx = lower.indexOf('category');
-    return idx >= 0 ? headers[idx] : null;
-  };
-
-  const splitCsvLine = (line) => {
-    // Simple CSV splitter; assumes no escaped commas within quotes for MVP
-    // Works for common simple CSVs; not a full CSV parser to keep deps minimal
-    const parts = [];
-    let current = '';
-    let inQuotes = false;
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i];
-      if (ch === '"' ) {
-        inQuotes = !inQuotes;
-      } else if (ch === ',' && !inQuotes) {
-        parts.push(current);
-        current = '';
-      } else {
-        current += ch;
-      }
-    }
-    parts.push(current);
-    return parts.map((p) => p.trim().replace(/^"|"$/g, ''));
-  };
-
-  const parseGeojsonPoints = (text) => {
-    try {
-      const data = JSON.parse(text);
-      if (data.type !== 'FeatureCollection') return [];
-      const feats = Array.isArray(data.features) ? data.features : [];
-      const pts = [];
-      for (const f of feats) {
-        const g = f.geometry || {};
-        if (g.type !== 'Point') continue;
-        const coords = g.coordinates || [];
-        if (!Array.isArray(coords) || coords.length < 2) continue;
-        const lon = Number(coords[0]);
-        const lat = Number(coords[1]);
-        if (!isFinite(lat) || !isFinite(lon)) continue;
-        if (lat < -90 || lat > 90 || lon < -180 || lon > 180) continue;
-        const category = f.properties?.category;
-        pts.push({ lat, lon, category });
-      }
-      return pts;
-    } catch {
-      return [];
     }
   };
 
@@ -256,7 +151,7 @@ const Sidebar = ({
   return (
     <>
       {/* SIDEBAR CONTENT */}
-      <div className="w-full md:w-80 bg-white dark:bg-blue-950 border-r border-blue-200 dark:border-blue-800 flex flex-col h-full overflow-y-auto transition-colors duration-300 shadow-xl relative">
+      <div className="tool-rail w-full md:w-80 bg-white dark:bg-blue-950 border-r border-blue-200 dark:border-blue-800 flex flex-col h-full overflow-y-auto transition-colors duration-300 shadow-xl relative">
         <div className="p-6">
           
           {/* Header */}
@@ -266,62 +161,26 @@ const Sidebar = ({
               GeoAnalytica
             </h1>
             <button 
-              onClick={toggleTheme} 
+              aria-label="Switch color theme" onClick={toggleTheme}
               className="p-2 border border-blue-300 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-900 text-blue-700 dark:text-blue-300 transition-colors rounded-md"
             >
               {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
           </div>
 
-          {/* Auth Section */}
-          <div className="mb-6 pb-4 border-b border-blue-200 dark:border-blue-700">
-            {user ? (
-              <>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    onClick={onShowSavedPlaces}
-                    className="flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
-                  >
-                    <Star size={18} />
-                    Saved
-                  </button>
-                  
-                  <button
-                    onClick={() => setShowProfile(true)}
-                    className="flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
-                  >
-                    <User size={18} />
-                    Profile
-                  </button>
-                </div>
-                <button
-                  onClick={signOut}
-                  className="mt-2 w-full flex items-center justify-center gap-2 p-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 transition rounded-md border border-blue-300 dark:border-blue-700"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={() => setShowLoginModal(true)}
-                className="w-full flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
-              >
-                <User size={18} />
-                Sign In / Sign Up
-              </button>
-            )}
-          </div>
-
           {/* Search */}
-          <form onSubmit={handleSearch} className="mb-6 relative">
+          <form onSubmit={handleSearch} className="city-search">
+            <label htmlFor="city-query">Explore a city</label>
+            <div className="city-query">
             <input
               type="text"
-              placeholder="Search city (e.g. Miami)..."
+              id="city-query" placeholder="City or town"
               className="w-full p-3 pl-10 border border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900 dark:text-blue-100 focus:ring-2 focus:ring-blue-600 outline-none rounded-md"
               value={cityInput}
               onChange={(e) => setCityInput(e.target.value)}
             />
-            <Search className="absolute left-3 top-3.5 text-blue-500" size={18} />
+            <button type="submit" aria-label="Search city"><Search size={18}/></button>
+            </div>
           </form>
 
           <div className="space-y-6">
@@ -329,12 +188,12 @@ const Sidebar = ({
             {/* Data Layers Dropdown */}
             <div>
               <label className="block text-sm font-bold text-blue-900 dark:text-blue-200 mb-2">
-                Data Layers ({selectedAmenities.length} selected)
+                Map layers
               </label>
               <div className="relative">
                 <button
                   type="button"
-                  onClick={() => setShowDropdown(!showDropdown)}
+                  aria-expanded={showDropdown} onClick={() => setShowDropdown(!showDropdown)}
                   className="w-full p-3 border border-blue-300 dark:border-blue-700 bg-white dark:bg-blue-900 text-blue-900 dark:text-blue-100 flex items-center justify-between rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors"
                 >
                   <span className="text-sm">
@@ -359,7 +218,7 @@ const Sidebar = ({
                         onClick={clearAllAmenities}
                         className="px-3 py-1 text-xs bg-blue-200 dark:bg-blue-800 text-blue-900 dark:text-blue-200 hover:bg-blue-300 dark:hover:bg-blue-700 transition-colors rounded-md"
                       >
-                        Clear All
+                        Reset layers
                       </button>
                     </div>
                     
@@ -385,21 +244,6 @@ const Sidebar = ({
                 )}
               </div>
               
-              <div className="mt-3 flex flex-wrap gap-1">
-                {selectedAmenities.slice(0, 6).map((amenity) => (
-                  <span
-                    key={amenity}
-                    className="px-2 py-1 bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 text-xs rounded-md font-medium"
-                  >
-                    {amenity.replace(/_/g, ' ')}
-                  </span>
-                ))}
-                {selectedAmenities.length > 6 && (
-                  <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 text-xs rounded-md">
-                    +{selectedAmenities.length - 6} more
-                  </span>
-                )}
-              </div>
             </div>
 
             {/* Search Radius */}
@@ -408,7 +252,7 @@ const Sidebar = ({
                 Search Radius: {searchRadius / 1000} km
               </label>
               <input 
-                type="range" 
+                aria-label="Search radius" type="range"
                 min="1000" 
                 max="20000" 
                 step="500" 
@@ -436,7 +280,7 @@ const Sidebar = ({
             {/* Action Buttons */}
             <div className="flex flex-col gap-3">
               <button
-                onClick={toggleHeatmap}
+                aria-pressed={showHeatmap} onClick={toggleHeatmap}
                 className={`flex items-center justify-center gap-2 p-3 border transition-colors rounded-md ${
                   showHeatmap 
                     ? 'bg-orange-100 dark:bg-orange-900/30 border-orange-500 text-orange-700 dark:text-orange-300' 
@@ -450,10 +294,10 @@ const Sidebar = ({
               <button
                 onClick={onExport}
                 className="flex items-center justify-center gap-2 p-3 bg-green-700 dark:bg-green-800 text-white hover:bg-green-800 dark:hover:bg-green-700 transition-colors rounded-md border border-green-600"
-                disabled={loading}
+                disabled={loading || !canExport}
               >
                 <Download size={18} />
-                Export Data
+                Export places as CSV
               </button>
               
               <button
@@ -464,6 +308,7 @@ const Sidebar = ({
                 Compare Cities
               </button>
 
+              <h2 className="dataset-heading">Dataset analysis</h2>
               {/* Upload Dataset */}
               <input
                 id="hidden-upload-input"
@@ -475,9 +320,9 @@ const Sidebar = ({
               <button
                 onClick={handleUploadClick}
                 className="flex items-center justify-center gap-2 p-3 bg-purple-700 dark:bg-purple-800 text-white hover:bg-purple-800 dark:hover:bg-purple-700 transition-colors rounded-md border border-purple-600 disabled:opacity-60"
-                disabled={uploading}
+                disabled={uploading || analysisLoading}
               >
-                {uploading ? 'Uploading...' : 'Upload Dataset'}
+                {uploading ? 'Uploading...' : 'Upload CSV or GeoJSON'}
               </button>
               {uploadError && (
                 <p className="text-sm text-red-600 dark:text-red-400">{uploadError}</p>
@@ -546,51 +391,57 @@ const Sidebar = ({
                   )}
 
                   {analysisResult && (
-                    <div className="mt-2 text-xs bg-blue-50 dark:bg-blue-900/40 border border-blue-300 dark:border-blue-700 rounded-md p-2 text-blue-900 dark:text-blue-100 space-y-1">
-                      <div><strong>Total points:</strong> {analysisResult?.summary?.total_points ?? '-'}</div>
-                      <div><strong>BBox:</strong> {analysisResult?.summary?.bbox ? JSON.stringify(analysisResult.summary.bbox) : '-'}</div>
-                      <div><strong>Mean center:</strong> {analysisResult?.summary?.mean_center ? JSON.stringify(analysisResult.summary.mean_center) : '-'}</div>
-                      <div><strong>Category counts:</strong> {analysisResult?.summary?.category_counts ? JSON.stringify(analysisResult.summary.category_counts) : '-'}</div>
-                      <div><strong>Clusters:</strong> {analysisResult?.clustering?.num_clusters ?? '-'}</div>
-                      {Array.isArray(analysisResult?.clustering?.clusters) && analysisResult.clustering.clusters.length > 0 && (
-                        <div className="max-h-24 overflow-y-auto">
-                          {analysisResult.clustering.clusters.slice(0, 5).map((c) => (
-                            <div key={c.cluster_id}>
-                              #{c.cluster_id} size {c.size} centroid {JSON.stringify(c.centroid)}
-                            </div>
-                          ))}
-                          {analysisResult.clustering.clusters.length > 5 && <div>… {analysisResult.clustering.clusters.length - 5} more</div>}
-                        </div>
-                      )}
+                    <div className="result-links">
+                      <button type="button" onClick={() => setIsAnalysisModalOpen(true)}>View analysis results</button>
+                      <button type="button" onClick={() => setShowAIInsightsModal(true)}>
+                        <Sparkles size={16} /> Interpret with Gemini
+                      </button>
                     </div>
                   )}
                 </div>
               )}
-
-              {/* AI Insights Button - After dataset/analysis section */}
-              <button
-                type="button"
-                disabled
-                title="AI Insights is temporarily unavailable"
-                className="w-full flex cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-slate-300 bg-slate-100 p-3 font-semibold text-slate-500 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400"
-              >
-                <Sparkles size={18} />
-                AI Insights (Paused)
-              </button>
             </div>
           </div>
         </div>
         
-        <div className="mx-4 mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-left text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100">
-          <div className="flex items-center gap-2 font-semibold">
-            <Info size={15} aria-hidden="true" />
-            AI Insights temporarily unavailable
-          </div>
-          <p className="mt-1 leading-relaxed text-amber-800 dark:text-amber-200">
-            The optional AI service is paused to keep this public demo sustainable. Core mapping and analytics remain available.
-          </p>
-        </div>
+        <div className="rail-account">
+          <div className="mb-6 pb-4 border-b border-blue-200 dark:border-blue-700">
+            {user ? (
+              <>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={onShowSavedPlaces}
+                    className="flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
+                  >
+                    <Star size={18} />
+                    Saved
+                  </button>
 
+                  <button
+                    onClick={() => setShowProfile(true)}
+                    className="flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
+                  >
+                    <User size={18} />
+                    Profile
+                  </button>
+                </div>
+                <button
+                  onClick={signOut}
+                  className="mt-2 w-full flex items-center justify-center gap-2 p-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 transition rounded-md border border-blue-300 dark:border-blue-700"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setShowLoginModal(true)}
+                className="w-full flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
+              >
+                <User size={18} />
+                Sign In / Sign Up
+              </button>
+            )}
+          </div></div>
         {/* Footer */}
         <div className="mt-auto p-6 text-xs text-blue-600 dark:text-blue-400 text-center border-t border-blue-200 dark:border-blue-800">
           <p className="mb-1">Data © OpenStreetMap contributors</p>
@@ -693,9 +544,8 @@ const Sidebar = ({
             onClose={() => setShowAIInsightsModal(false)}
             analysisResult={analysisResult}
             token={token}
-            onGenerate={async (result) => {
-              return await api.generateAIInsight(token, result);
-            }}
+            key={runId}
+            onGenerate={() => api.generateAIInsight(token, runId)}
           />
         </>,
         document.body

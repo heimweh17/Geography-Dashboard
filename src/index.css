@@ -14,3 +14,54 @@
 .osm-pin-icon {
   transform: none !important;
 }
+/* The map stays in view while its query and measurements change. */
+.tool-rail {
+  --rail-ink: #183d41;
+  --rail-line: #baccca;
+  --rail-surface: #fff;
+  --rail-accent: #17625c;
+  background: var(--rail-surface);
+  color: var(--rail-ink);
+  border-color: var(--rail-line);
+  box-shadow: none;
+}
+.dark .tool-rail {
+  --rail-ink: #d4e7e3;
+  --rail-line: #385955;
+  --rail-surface: #142725;
+  --rail-accent: #9ad6bf;
+}
+.tool-rail > div:first-child { padding: 20px; }
+.tool-rail h1 { font: 650 1.35rem/1.2 "Segoe UI", sans-serif; color: var(--rail-ink); }
+.tool-rail h1 svg { color: var(--rail-accent); }
+.city-search { margin: 1.5rem 0 1rem; }
+.city-search label, .dataset-heading { font-weight: 650; color: var(--rail-ink); }
+.city-query { display: flex; margin-top: .5rem; }
+.city-query input { min-width: 0; background: var(--rail-surface); color: var(--rail-ink); padding: .6rem .75rem; border: 1px solid var(--rail-line); border-radius: 5px 0 0 5px; }
+.city-query button { padding: 0 12px; background: #215952; color: white; border-radius: 0 5px 5px 0; }
+.tool-rail .flex-col.gap-3 { gap: 6px; }
+.tool-rail .flex-col.gap-3 > button, .rail-account button, .result-links button {
+  display: flex; align-items: center; justify-content: flex-start; gap: .6rem;
+  background: var(--rail-surface); color: var(--rail-ink); border: 1px solid var(--rail-line);
+  border-radius: 5px; font-size: .875rem; padding: .55rem .7rem; font-weight: 550;
+}
+.tool-rail button:disabled { opacity: .5; cursor: default; }
+.tool-rail .flex-col.gap-3 > button:hover:enabled, .rail-account button:hover, .result-links button:hover { border-color: var(--rail-accent); color: var(--rail-accent); }
+.tool-rail button[aria-pressed=true] { box-shadow: inset 3px 0 var(--rail-accent); }
+.dataset-heading { border-top: 1px solid var(--rail-line); margin: .75rem 0 .25rem; padding-top: 1rem; }
+.result-links { display: grid; gap: .4rem; margin-top: .6rem; }
+.rail-account { padding: 0 20px; }
+.rail-account > div { margin-bottom: 0; border: 0; }
+.map-caption { position: absolute; bottom: 2rem; left: 12px; z-index: 450; display: flex; flex-wrap: wrap; align-items: baseline; gap: .65rem; max-width: calc(100% - 24px); background: #173d3c; color: white; border-radius: 4px; padding: .45rem .75rem; pointer-events: none; font-size: .875rem; overflow-wrap: anywhere; }
+.map-caption span { color: #cbdfda; font-variant-numeric: tabular-nums; }
+.mobile-tools { background: #173d3c; padding: 5px; gap: 4px; z-index: 1000; }
+.mobile-tools button { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; color: #eef5f2; padding: 8px; border-radius: 4px; }
+.mobile-tools button[aria-expanded=true], .mobile-tools button[aria-pressed=true] { background: #e5f0eb; color: #173d3c; }
+@media (max-width: 767px) {
+  .mobile-tools { display: flex; }
+  .workspace-panel { top: 50px; }
+}
+:focus-visible { outline: 2px solid #258e82; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}

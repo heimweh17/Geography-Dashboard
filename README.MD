@@ -33,7 +33,7 @@ The city comparison workflow queries the same amenity set across two study areas
 
 ### Optional AI interpretation service
 
-After an authenticated user uploads a CSV or GeoJSON point dataset and runs the deterministic analysis pipeline, the UI can pass the structured result to a dedicated AI service for a human-readable narrative. The AI layer is an interpretation step, not the source of the underlying metrics.
+After an authenticated user uploads a CSV or GeoJSON point dataset and runs the deterministic analysis pipeline, the UI can request a Gemini summary of the saved analysis run for a human-readable narrative. The AI layer is an interpretation step, not the source of the underlying metrics.
 
 ![AI-assisted analysis narrative](pics/Screenshot%202025-12-19%20174500.png)
 
@@ -47,7 +47,7 @@ After an authenticated user uploads a CSV or GeoJSON point dataset and runs the 
 | City comparison | Side-by-side study areas with normalized density and diversity comparisons plus CSV and JSON exports. |
 | User workspace | Email/password registration, JWT sessions, saved-place CRUD, profile summary, and protected API routes. |
 | Dataset analytics | Authenticated CSV or GeoJSON upload, coordinate parsing, bounding box detection, grid-density calculation, DBSCAN clustering, and persisted analysis results. |
-| AI integration | A separate FastAPI/Gemini insight service with structured output and a database-backed per-user limit; the service source and proxy contract are retained. |
+| AI integration | The main API generates structured Gemini summaries with a database-backed per-user limit. |
 
 ## Architecture
 
@@ -61,12 +61,12 @@ Browser -> Vercel-hosted React SPA -> Render FastAPI API -> Neon PostgreSQL
    |             |                       |                      +-- users, saved places,
    |             |                       |                          datasets, analysis runs
    |             |                       +-- JWT auth, upload parsing, DBSCAN,
-   |             |                           grid-density analysis, AI proxy
+   |             |                           grid-density analysis, AI summaries
    |             +-- Leaflet, React, Recharts, interactive controls
    |
    +-- OSRM route service for selected amenities
 
-Render FastAPI AI proxy -> Dedicated AI FastAPI service -> Gemini API
+Render FastAPI -> Gemini API (on explicit summary requests)
 ```
 
 ### Deployed services
@@ -79,19 +79,19 @@ Render FastAPI AI proxy -> Dedicated AI FastAPI service -> Gemini API
 | OpenStreetMap services | Supply basemap, geocoding, and amenity data. |
 | OSRM | Provides driving routes for selected map features. |
 
-### AI service deployment note
+### AI configuration
 
-The dedicated AI service was previously deployed on AWS and successfully used by the dashboard. Its FastAPI entry point, Gemini integration, rate-limiting logic, and the main API's `AI_SERVICE_URL` proxy contract remain in the codebase. It is intentionally not running in the current public deployment to avoid recurring cloud costs.
+Set GEMINI_API_KEY on the Render backend and redeploy. Sign in, upload a point dataset, run analysis, then select **Interpret with Gemini**. One successful summary is available per user per rolling seven days. The key stays on the server.
 
-To restore it, deploy the AI service, configure its Gemini credentials, and set the main API's `AI_SERVICE_URL`. This lets the core dashboard and deterministic analysis workflow remain deployable without coupling the public demo to a paid AI runtime.
+The former AWS service entry point (app.ai_main:app) and proxy are retained in the backend repository. To deliberately restore split deployment, configure AI_MODE=remote and AI_SERVICE_URL on the core API and the Gemini key on the standalone service. Embedded mode is the default, including when an old upstream URL is present.
 
 ## Data flow and engineering choices
 
 1. **City lookup** is served through the FastAPI `/osm/cities` endpoint, which calls Nominatim with an application user agent. This keeps the browser clear of geocoder CORS constraints.
-2. **Amenity discovery** uses Overpass queries for nodes, ways, and relations within either a radius or a drawn polygon. The client retries a transient failure once and uses a bounded request timeout.
+2. **Amenity discovery** uses Overpass queries for nodes, ways, and relations within either a radius or a drawn polygon. The API validates layer names and coordinates, translates layers to OSM tags and tries alternate Overpass endpoints after upstream failures.
 3. **Client-side city analytics** computes comparable statistics from the returned OSM feature set. This keeps immediate map interaction responsive while making the calculation logic inspectable in the frontend.
 4. **Authenticated dataset analytics** sends user-provided CSV or GeoJSON files to FastAPI. The API validates the file type, detects coordinates, calculates a bounding box and summary statistics, runs grid-density and DBSCAN calculations, and records the result in PostgreSQL.
-5. **AI insights are optional and downstream.** The main API forwards a JWT-authenticated structured analysis payload, including a request ID, to the separate AI service through `AI_SERVICE_URL`. The AI service applies a per-user rolling seven-day limit, calls Gemini, and returns structured narrative output. It is currently paused in the public deployment; the analytical results remain available independently of the narrative layer.
+5. **AI interpretation** loads a saved run scoped to the signed-in user, sends summary metrics to Gemini and records successful usage.
 
 ## Reliability and security highlights
 
@@ -100,7 +100,7 @@ To restore it, deploy the AI service, configure its Gemini credentials, and set 
 - The frontend retries temporary authentication gateway failures and presents a connection state while the free API service wakes up.
 - Map tile configuration supports CARTO when an API key is present and falls back to OpenStreetMap tiles otherwise, preserving a functional map without embedding a key in the repository.
 - The FastAPI service configures explicit CORS origins for the production frontend and local development.
-- The API sends a request ID to the optional AI service so cross-service failures can be traced.
+- Request IDs correlate backend requests with structured logs.
 
 ## Tech stack
 
@@ -118,7 +118,7 @@ To restore it, deploy the AI service, configure its Gemini credentials, and set 
 - PostgreSQL, Neon, psycopg2
 - NumPy and scikit-learn for spatial analysis
 - python-jose and Argon2 password hashing
-- Google Generative AI SDK for the optional AI microservice
+- Gemini REST API for optional dataset interpretation
 
 **Platform and data integrations**
 
@@ -177,9 +177,9 @@ npm run lint
 | `DATABASE_URL` | Backend | PostgreSQL connection string. Omit locally to use SQLite. |
 | `SECRET_KEY` | Backend | Secret for JWT signing. |
 | `CORS_ORIGINS` | Backend | Comma-separated allowed frontend origins. |
-| `AI_SERVICE_URL` | Backend, optional | Upstream endpoint for AI narrative generation. |
-| `GEMINI_API_KEY` | AI microservice | Credential used by the Gemini integration. |
-| `GEMINI_MODEL` | AI microservice, optional | Preferred Gemini model name. |
+| `AI_SERVICE_URL` | Backend, remote mode only | Upstream endpoint for AI narrative generation. |
+| `GEMINI_API_KEY` | Backend | Credential used by the Gemini integration. |
+| `GEMINI_MODEL` | Backend, optional | Preferred Gemini model name. |
 
 ## Public data and attribution
 
@@ -187,7 +187,7 @@ The map and amenity workflow depends on public, third-party services. Data cover
 
 ## Repository notes
 
-The Vercel deployment is built from the React client in `src/`. The production FastAPI service is maintained in the separate [gdashboardbackend repository](https://github.com/heimweh17/gdashboardbackend). The service boundaries are explicit: the browser calls the core API, and the core API can call the optional AI service through a small authenticated contract.
+The Vercel deployment is built from the React client in `src/`. The production FastAPI service is maintained in the separate [gdashboardbackend repository](https://github.com/heimweh17/gdashboardbackend). The service boundaries are explicit: the browser calls FastAPI, which owns persistence, spatial analysis and Gemini integration.
 
 ## Author
 

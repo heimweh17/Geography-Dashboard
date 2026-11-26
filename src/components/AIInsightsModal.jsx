@@ -18,7 +18,7 @@ const AIInsightsModal = ({ isOpen, onClose, analysisResult, token, onGenerate })
     setInsight(null);
 
     try {
-      const result = await onGenerate(analysisResult);
+      const result = await onGenerate();
       setInsight(result);
     } catch (err) {
       setError(err?.message || 'Failed to generate insight. Please try again.');
@@ -31,7 +31,7 @@ const AIInsightsModal = ({ isOpen, onClose, analysisResult, token, onGenerate })
 
   return createPortal(
     <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-white dark:bg-blue-950 border-2 border-blue-300 dark:border-blue-800 shadow-2xl w-full max-w-2xl relative rounded-xl overflow-hidden">
+      <div role="dialog" aria-modal="true" aria-label="AI insights" onKeyDown={e => { if (e.key === "Escape") onClose(); }} className="bg-white dark:bg-blue-950 border-2 border-blue-300 dark:border-blue-800 shadow-2xl w-full max-w-2xl relative rounded-xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-blue-200 dark:border-blue-800 bg-gradient-to-r from-blue-50 to-white dark:from-blue-950 dark:to-blue-950">
           <div className="flex items-center gap-3">
@@ -44,7 +44,7 @@ const AIInsightsModal = ({ isOpen, onClose, analysisResult, token, onGenerate })
             </div>
           </div>
           <button
-            onClick={onClose}
+            autoFocus onClick={onClose}
             className="p-2 rounded-md text-blue-600 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-100 hover:bg-blue-100 dark:hover:bg-blue-900"
             aria-label="Close"
           >

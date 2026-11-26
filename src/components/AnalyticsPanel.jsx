@@ -26,6 +26,7 @@ const PRIMARY_COLORS = [
 
 const AnalyticsPanel = ({ 
   data, 
+  loading, error,
   amenityLabel, 
   onCategoryClick, 
   activeFilter, 
@@ -150,12 +151,10 @@ const AnalyticsPanel = ({
           </>
         ) : (
           <>
-            <div className="text-6xl mb-4 text-gray-400">📊</div>
-            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200">
-              No data found
-            </h3>
+            <Database size={24} className="mb-3 text-slate-500" />
+            <h3 className="font-semibold">{loading ? 'Finding places…' : error ? 'Search unavailable' : 'No places in this area'}</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-              Try a larger radius or different area.
+              {loading ? 'Results will appear here.' : error || 'Try a larger radius or choose another map layer.'}
             </p>
           </>
         )}
@@ -192,16 +191,14 @@ const AnalyticsPanel = ({
           </div>
         )}
 
-        {/* TOTAL RESULTS - LARGE AND PROMINENT */}
-        <div className="bg-gradient-to-br from-blue-50 to-gray-50 dark:from-gray-800 dark:to-gray-850 border-2 border-blue-200 dark:border-gray-600 p-6 rounded-lg text-center">
-          <div className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">
-            Total Results
+        <div className="flex items-baseline justify-between gap-3 border-y border-slate-300 py-3 dark:border-slate-700">
+          <div>
+            <strong className="block text-3xl tabular-nums">{metrics.total}</strong>
+            <span className="text-sm">Mapped places</span>
           </div>
-          <div className="text-6xl font-bold text-blue-700 dark:text-blue-400 mb-2">
-            {metrics.total}
-          </div>
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            amenities found in {metrics.area} km²
+          <div className="text-right">
+            <strong className="block text-lg tabular-nums">{metrics.area} km²</strong>
+            <span className="text-sm">Study area</span>
           </div>
         </div>
 

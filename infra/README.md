@@ -16,7 +16,7 @@ This directory holds infrastructure that is separate from the public Vercel, Ren
 
 The frontend is built with `VITE_API_BASE_URL=/api`. Its Nginx container proxies `/api` to the in-cluster `core-api` service, so local browser requests do not depend on CORS configuration.
 
-The AI service is deliberately excluded from the default local deployment. It requires a separate Gemini secret and is not necessary for the deterministic GIS workflow. To deploy it only when a key is available:
+The core API includes Gemini interpretation. To supply its optional Kubernetes Secret and restart the API:
 
 ```powershell
 $env:GEMINI_API_KEY = "your-key"

@@ -4,7 +4,6 @@ metadata:
   name: geodashboard-config
   namespace: geo-dashboard
 data:
-  AI_SERVICE_URL: http://ai-service:8000
   AUTO_CREATE_TABLES: "false"
   CORS_ORIGINS: http://localhost:8080
   ENVIRONMENT: local-kubernetes
