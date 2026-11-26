@@ -394,7 +394,7 @@ const Sidebar = ({
                     <div className="result-links">
                       <button type="button" onClick={() => setIsAnalysisModalOpen(true)}>View analysis results</button>
                       <button type="button" onClick={() => setShowAIInsightsModal(true)}>
-                        <Sparkles size={16} /> Interpret with Gemini
+                        <Sparkles size={16} /> Interpret with UF NaviGator
                       </button>
                     </div>
                   )}

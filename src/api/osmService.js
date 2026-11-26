@@ -4,10 +4,14 @@ import { API_BASE } from '../lib/api';
 const OSRM_BASE_URL = 'https://router.project-osrm.org/route/v1';
 
 export const searchCity = async (cityName) => {
-  const response = await axios.get(`${API_BASE}/osm/cities`, {
-    params: { query: cityName },
-  });
-  return response.data;
+  const query = cityName.trim();
+  if (query.length < 2 || query.length > 200) throw new Error('Enter a city name between 2 and 200 characters.');
+  try {
+    const response = await axios.get(API_BASE + '/osm/cities', { params: { query }, timeout: 45000 });
+    return response.data;
+  } catch {
+    throw new Error('City lookup could not reach the geocoder. Try the city name followed by its state or country.');
+  }
 };
 
 export const fetchAmenities = async (lat, lon, amenities, radius, polygon = null) => {

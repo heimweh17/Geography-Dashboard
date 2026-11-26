@@ -35,7 +35,7 @@ The city comparison workflow queries the same amenity set across two study areas
 
 ### Optional AI interpretation service
 
-After an authenticated user uploads a CSV or GeoJSON point dataset and runs the deterministic analysis pipeline, the UI can request a Gemini summary of the saved analysis run for a human-readable narrative. The AI layer is an interpretation step, not the source of the underlying metrics.
+After an authenticated user uploads a CSV or GeoJSON point dataset and runs the deterministic analysis pipeline, the UI can request a UF NaviGator summary of the saved analysis run for a human-readable narrative. The AI layer is an interpretation step, not the source of the underlying metrics.
 
 ![AI-assisted analysis narrative](pics/Screenshot%202025-12-19%20174500.png)
 
@@ -49,7 +49,7 @@ After an authenticated user uploads a CSV or GeoJSON point dataset and runs the 
 | City comparison | Side-by-side study areas with normalized density and diversity comparisons plus CSV and JSON exports. |
 | User workspace | Email/password registration, JWT sessions, saved-place CRUD, profile summary, and protected API routes. |
 | Dataset analytics | Authenticated CSV or GeoJSON upload, coordinate parsing, bounding box detection, grid-density calculation, DBSCAN clustering, and persisted analysis results. |
-| AI integration | The main API generates structured Gemini summaries with a database-backed per-user limit. |
+| AI integration | The main API generates structured UF NaviGator summaries with a database-backed per-user limit. |
 
 ## Architecture
 
@@ -68,7 +68,7 @@ Browser -> Vercel-hosted React SPA -> Render FastAPI API -> Neon PostgreSQL
    |
    +-- OSRM route service for selected amenities
 
-Render FastAPI -> Gemini API (on explicit summary requests)
+Render FastAPI -> UF NaviGator API (on explicit summary requests)
 ```
 
 ### Deployed services
@@ -83,17 +83,17 @@ Render FastAPI -> Gemini API (on explicit summary requests)
 
 ### AI configuration
 
-Set GEMINI_API_KEY on the Render backend and redeploy. Sign in, upload a point dataset, run analysis, then select **Interpret with Gemini**. One successful summary is available per user per rolling seven days. The key stays on the server.
+Set NAVIGATOR_TOOLKIT_API_KEY on the Render backend and redeploy. Sign in, upload a point dataset, run analysis, then select **Interpret with UF NaviGator**. One successful summary is available per user per rolling seven days. The key stays on the server.
 
-The former AWS service entry point (app.ai_main:app) and proxy are retained in the backend repository. To deliberately restore split deployment, configure AI_MODE=remote and AI_SERVICE_URL on the core API and the Gemini key on the standalone service. Embedded mode is the default, including when an old upstream URL is present.
+The former AWS service entry point (app.ai_main:app) and proxy are retained in the backend repository. To deliberately restore split deployment, configure AI_MODE=remote and AI_SERVICE_URL on the core API and the UF NaviGator key on the standalone service. Embedded mode is the default, including when an old upstream URL is present.
 
 ## Data flow and engineering choices
 
-1. **City lookup** is served through the FastAPI `/osm/cities` endpoint, which calls Nominatim with an application user agent. This keeps the browser clear of geocoder CORS constraints.
+1. **City lookup** is served through the FastAPI `/osm/cities` endpoint, which looks up exact names in a bundled GeoNames gazetteer and calls Nominatim for other queries. This keeps the browser clear of geocoder CORS constraints.
 2. **Amenity discovery** uses Overpass queries for nodes, ways, and relations within either a radius or a drawn polygon. The API validates layer names and coordinates, translates layers to OSM tags and tries alternate Overpass endpoints after upstream failures. If those gateways fail, the browser can retry the same validated query directly.
 3. **Client-side city analytics** computes comparable statistics from the returned OSM feature set. This keeps immediate map interaction responsive while making the calculation logic inspectable in the frontend.
 4. **Authenticated dataset analytics** sends user-provided CSV or GeoJSON files to FastAPI. The API validates the file type, detects coordinates, calculates a bounding box and summary statistics, runs grid-density and DBSCAN calculations, and records the result in PostgreSQL.
-5. **AI interpretation** loads a saved run scoped to the signed-in user, sends summary metrics to Gemini and records successful usage.
+5. **AI interpretation** loads a saved run scoped to the signed-in user, sends summary metrics to UF NaviGator and records successful usage.
 
 ## Reliability and security highlights
 
@@ -120,7 +120,7 @@ The former AWS service entry point (app.ai_main:app) and proxy are retained in t
 - PostgreSQL, Neon, psycopg2
 - NumPy and scikit-learn for spatial analysis
 - python-jose and Argon2 password hashing
-- Gemini REST API for optional dataset interpretation
+- UF NaviGator REST API for optional dataset interpretation
 
 **Platform and data integrations**
 
@@ -180,8 +180,8 @@ npm run lint
 | `SECRET_KEY` | Backend | Secret for JWT signing. |
 | `CORS_ORIGINS` | Backend | Comma-separated allowed frontend origins. |
 | `AI_SERVICE_URL` | Backend, remote mode only | Upstream endpoint for AI narrative generation. |
-| `GEMINI_API_KEY` | Backend | Credential used by the Gemini integration. |
-| `GEMINI_MODEL` | Backend, optional | Preferred Gemini model name. |
+| `NAVIGATOR_TOOLKIT_API_KEY` | Backend | Credential used by the UF NaviGator integration. |
+| `NAVIGATOR_MODEL` | Backend, optional | Preferred UF NaviGator model name. |
 
 ## Public data and attribution
 
@@ -189,7 +189,7 @@ The map and amenity workflow depends on public, third-party services. Data cover
 
 ## Repository notes
 
-The Vercel deployment is built from the React client in `src/`. The production FastAPI service is maintained in the separate [gdashboardbackend repository](https://github.com/heimweh17/gdashboardbackend). The service boundaries are explicit: the browser calls FastAPI, which owns persistence, spatial analysis and Gemini integration.
+The Vercel deployment is built from the React client in `src/`. The production FastAPI service is maintained in the separate [gdashboardbackend repository](https://github.com/heimweh17/gdashboardbackend). The service boundaries are explicit: the browser calls FastAPI, which owns persistence, spatial analysis and UF NaviGator integration.
 
 ## Author
 

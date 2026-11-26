@@ -74,6 +74,7 @@ const ComparisonModal = ({ isOpen, onClose }) => {
     setError(null);
     setComparisonData(null);
 
+    let stage = 'city lookup';
     try {
       const loc1 = await searchCity(city1Name);
       const loc2 = await searchCity(city2Name);
@@ -84,8 +85,10 @@ const ComparisonModal = ({ isOpen, onClose }) => {
         return;
       }
 
-      const data1 = await fetchAmenities(loc1.lat, loc1.lon, selectedAmenities, radius);
-      const data2 = await fetchAmenities(loc2.lat, loc2.lon, selectedAmenities, radius);
+      stage = 'map data';
+      const [data1, data2] = await Promise.all([loc1, loc2].map(
+        city => fetchAmenities(city.lat, city.lon, selectedAmenities, radius)
+      ));
 
       const analysis = compareCityData(data1, data2, radius);
 
@@ -112,7 +115,7 @@ const ComparisonModal = ({ isOpen, onClose }) => {
       });
     } catch (err) {
       console.error('Analysis error:', err);
-      setError('Analysis failed. Please try again.');
+      setError(stage === 'city lookup' ? err.message : 'Could not compare the map data. Try a smaller radius or retry.');
     } finally {
       setLoading(false);
     }

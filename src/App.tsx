@@ -137,15 +137,17 @@ function App() {
       if (location) {
         setShowLeftSidebar(false);
         setCity(location.display_name);
-        setCoordinates([location.lat, location.lon]);
+        // Align resolved city centers with the four-decimal precision of the study map.
+        const center = [location.lat, location.lon].map(value => Number(Number(value).toFixed(4)));
+        setCoordinates(center);
         setCustomPolygon(null);
-        await loadData(location.lat, location.lon, amenities, radius, null);
+        await loadData(center[0], center[1], amenities, radius, null);
       } else {
         setDataError('City not found. Please check the spelling and try again.');
       }
     } catch (error) {
       console.error(error);
-      if (version === queryVersion.current) setDataError('City search is temporarily unavailable. Please try again in a moment.');
+      if (version === queryVersion.current) setDataError(error.message);
     } finally {
       if (version === queryVersion.current) setLoading(false);
     }

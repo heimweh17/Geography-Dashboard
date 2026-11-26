@@ -16,10 +16,10 @@ This directory holds infrastructure that is separate from the public Vercel, Ren
 
 The frontend is built with `VITE_API_BASE_URL=/api`. Its Nginx container proxies `/api` to the in-cluster `core-api` service, so local browser requests do not depend on CORS configuration.
 
-The core API includes Gemini interpretation. To supply its optional Kubernetes Secret and restart the API:
+The core API includes UF NaviGator interpretation. To supply its optional Kubernetes Secret and restart the API:
 
 ```powershell
-$env:GEMINI_API_KEY = "your-key"
+$env:NAVIGATOR_TOOLKIT_API_KEY = "your-key"
 .\infra\scripts\deploy-local.ps1 -EnableAI
 ```
 
@@ -39,4 +39,4 @@ terraform init -backend=false
 terraform plan
 ```
 
-`terraform apply` is intentionally a manual decision because it creates AWS resources. Do not place database URLs, JWT secrets, or Gemini keys in Terraform variables or state.
+`terraform apply` is intentionally a manual decision because it creates AWS resources. Do not place database URLs, JWT secrets, or UF NaviGator keys in Terraform variables or state.

@@ -96,8 +96,8 @@ export async function analyzeDataset(token, datasetId, params) {
 		body: JSON.stringify(params),
 	});
 	if (!res.ok) {
-		const text = await res.text();
-		throw new Error(text || 'Analysis failed');
+		const problem = await res.json().catch(() => ({}));
+		throw new Error(typeof problem.detail === 'string' ? problem.detail : 'Analysis failed. Check the analysis settings and try again.');
 	}
 	return res.json();
 }

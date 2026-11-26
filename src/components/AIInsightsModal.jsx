@@ -132,7 +132,7 @@ const AIInsightsModal = ({ isOpen, onClose, analysisResult, token, onGenerate })
               {/* Meta info */}
               {insight.meta && (
                 <div className="text-xs text-gray-500 dark:text-gray-400 text-center pt-2 border-t border-gray-200 dark:border-gray-700">
-                  Generated using {insight.meta.model || 'Gemini'} • {insight.meta.generated_at ? new Date(insight.meta.generated_at).toLocaleString() : ''}
+                  Generated using {insight.meta.model || 'UF NaviGator'} • {insight.meta.generated_at ? new Date(insight.meta.generated_at).toLocaleString() : ''}
                 </div>
               )}
             </div>

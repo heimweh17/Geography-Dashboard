@@ -69,10 +69,10 @@ kubectl rollout status deployment/prometheus --namespace $namespace --timeout=18
 kubectl rollout status deployment/grafana --namespace $namespace --timeout=180s
 
 if ($EnableAI) {
-    if (-not $env:GEMINI_API_KEY) {
-        throw "Set GEMINI_API_KEY before using -EnableAI."
+    if (-not $env:NAVIGATOR_TOOLKIT_API_KEY) {
+        throw "Set NAVIGATOR_TOOLKIT_API_KEY before using -EnableAI."
     }
-    kubectl create secret generic geodashboard-ai-secrets --namespace $namespace --from-literal="GEMINI_API_KEY=$env:GEMINI_API_KEY" --dry-run=client -o yaml | kubectl apply -f -
+    kubectl create secret generic geodashboard-ai-secrets --namespace $namespace --from-literal="NAVIGATOR_TOOLKIT_API_KEY=$env:NAVIGATOR_TOOLKIT_API_KEY" --dry-run=client -o yaml | kubectl apply -f -
     kubectl rollout restart deployment/core-api --namespace $namespace
     kubectl rollout status deployment/core-api --namespace $namespace --timeout=180s
 }
