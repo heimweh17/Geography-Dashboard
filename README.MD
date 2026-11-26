@@ -90,7 +90,7 @@ The former AWS service entry point (app.ai_main:app) and proxy are retained in t
 ## Data flow and engineering choices
 
 1. **City lookup** is served through the FastAPI `/osm/cities` endpoint, which calls Nominatim with an application user agent. This keeps the browser clear of geocoder CORS constraints.
-2. **Amenity discovery** uses Overpass queries for nodes, ways, and relations within either a radius or a drawn polygon. The API validates layer names and coordinates, translates layers to OSM tags and tries alternate Overpass endpoints after upstream failures.
+2. **Amenity discovery** uses Overpass queries for nodes, ways, and relations within either a radius or a drawn polygon. The API validates layer names and coordinates, translates layers to OSM tags and tries alternate Overpass endpoints after upstream failures. If those gateways fail, the browser can retry the same validated query directly.
 3. **Client-side city analytics** computes comparable statistics from the returned OSM feature set. This keeps immediate map interaction responsive while making the calculation logic inspectable in the frontend.
 4. **Authenticated dataset analytics** sends user-provided CSV or GeoJSON files to FastAPI. The API validates the file type, detects coordinates, calculates a bounding box and summary statistics, runs grid-density and DBSCAN calculations, and records the result in PostgreSQL.
 5. **AI interpretation** loads a saved run scoped to the signed-in user, sends summary metrics to Gemini and records successful usage.

@@ -11,10 +11,21 @@ export const searchCity = async (cityName) => {
 };
 
 export const fetchAmenities = async (lat, lon, amenities, radius, polygon = null) => {
-  const { data } = await axios.post(API_BASE + '/osm/amenities', {
-    lat, lon, amenities: Array.isArray(amenities) ? amenities : [amenities], radius, polygon,
-  });
-  return data.elements;
+  try {
+    const { data } = await axios.post(API_BASE + '/osm/amenities', {
+      lat, lon, amenities: Array.isArray(amenities) ? amenities : [amenities], radius, polygon,
+    });
+    return data.elements;
+  } catch (error) {
+    const query = error.response?.data?.detail?.overpass_query;
+    if (error.response?.status !== 502 || typeof query !== 'string') throw error;
+    const endpoint = 'https://maps.mail.ru/osm/tools/overpass/api/interpreter';
+    const response = query.length > 1500
+      ? await axios.post(endpoint, new URLSearchParams({ data: query }), { timeout: 15000 })
+      : await axios.get(endpoint, { params: { data: query }, timeout: 15000 });
+    if (response.data?.remark || !Array.isArray(response.data?.elements)) throw error;
+    return response.data.elements;
+  }
 };
 
 // Fetch route from User -> Destination using OSRM (Open Source Routing Machine)
