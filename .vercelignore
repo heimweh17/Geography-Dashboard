@@ -1,4 +1,4 @@
-# The Python API is deployed from the separate gdashboardbackend repository on Render.
+# The Python API is deployed from the separate Geography Dashboard Backend repository on Render.
 app/
 alembic/
 alembic.ini

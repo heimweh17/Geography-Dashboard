@@ -1,10 +1,10 @@
-# GeoAnalytica
+# Geography Dashboard
 
 **A full-stack geospatial analytics dashboard for exploring city amenities, comparing urban patterns, and turning spatial data into explainable insights.**
 
-[Live demo](https://thegeodashboard.vercel.app) | [Backend API docs](https://gdashboardbackend.onrender.com/docs) | [Backend repository](https://github.com/heimweh17/gdashboardbackend)
+[Compare cities](https://thegeodashboard.vercel.app/compare) | [Live demo](https://thegeodashboard.vercel.app) | [Backend API docs](https://gdashboardbackend.onrender.com/docs) | [Backend repository](https://github.com/heimweh17/Geography-Dashboard-Backend)
 
-GeoAnalytica is a portfolio project that combines an interactive map experience with an authenticated analytics workspace. A visitor can search a city, retrieve live OpenStreetMap amenity data, inspect statistical summaries, compare two cities on consistent study areas, and save places. Authenticated users can also upload point datasets for server-side spatial analysis.
+Geography Dashboard is a portfolio project that combines an interactive map experience with an authenticated analytics workspace. A visitor can search a city, retrieve live OpenStreetMap amenity data, inspect statistical summaries, compare two cities on consistent study areas, and save places. Authenticated users can also upload point datasets for server-side spatial analysis.
 
 ## Engineering focus
 
@@ -138,7 +138,7 @@ The [`infra/`](infra/README.md) directory adds a cost-contained local platform e
 ### 1. Run the API
 
 ```powershell
-git clone https://github.com/heimweh17/gdashboardbackend.git
+git clone https://github.com/heimweh17/Geography-Dashboard-Backend.git gdashboardbackend
 cd gdashboardbackend
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -155,8 +155,8 @@ uvicorn app.main:app --reload
 ### 2. Run the frontend
 
 ```powershell
-git clone https://github.com/heimweh17/Geo-Dashboard.git
-cd Geo-Dashboard
+git clone https://github.com/heimweh17/Geography-Dashboard.git
+cd Geography-Dashboard
 npm ci
 Copy-Item env.example .env.local
 # Set VITE_API_BASE_URL=http://localhost:8000 in .env.local
@@ -189,7 +189,7 @@ The map and amenity workflow depends on public, third-party services. Data cover
 
 ## Repository notes
 
-The Vercel deployment is built from the React client in `src/`. The production FastAPI service is maintained in the separate [gdashboardbackend repository](https://github.com/heimweh17/gdashboardbackend). The service boundaries are explicit: the browser calls FastAPI, which owns persistence, spatial analysis and UF NaviGator integration.
+The Vercel deployment is built from the React client in `src/`. The production FastAPI service is maintained in the separate [Geography Dashboard Backend repository](https://github.com/heimweh17/Geography-Dashboard-Backend). The service boundaries are explicit: the browser calls FastAPI, which owns persistence, spatial analysis and UF NaviGator integration.
 
 ## Author
 

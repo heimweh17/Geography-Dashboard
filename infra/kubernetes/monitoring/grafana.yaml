@@ -14,14 +14,14 @@ data:
   dashboards.yaml: |
     apiVersion: 1
     providers:
-      - name: GeoDashboard
-        folder: GeoDashboard
+      - name: Geography Dashboard
+        folder: Geography Dashboard
         type: file
         options:
           path: /var/lib/grafana/dashboards
   geodashboard-overview.json: |
     {
-      "title": "GeoDashboard Local Platform",
+      "title": "Geography Dashboard Local Platform",
       "timezone": "browser",
       "schemaVersion": 39,
       "version": 1,

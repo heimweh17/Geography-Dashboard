@@ -1,5 +1,5 @@
 {
-  "name": "geo-dashboard",
+  "name": "geography-dashboard",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "axios": "^1.13.2",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^1.0.4",
@@ -40,7 +41,7 @@
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4"
   },
-  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "description": "Geography Dashboard city exploration and spatial analysis workspace.",
   "main": "eslint.config.js",
   "keywords": [],
   "author": "",

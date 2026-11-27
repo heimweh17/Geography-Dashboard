@@ -1,5 +1,5 @@
 /**
- * Export Utilities for GeoAnalytica
+ * Export Utilities for Geography Dashboard
  */
 
 export const downloadCSV = (data, filename = "geo-data.csv") => {

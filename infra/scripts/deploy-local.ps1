@@ -46,7 +46,7 @@ if ([string]::IsNullOrWhiteSpace($existingSecret)) {
     $jwtSecret = -join ($alphabet | Get-Random -Count 48 | ForEach-Object { [char]$_ })
     kubectl create secret generic geodashboard-secrets --namespace $namespace --from-literal="POSTGRES_PASSWORD=$databasePassword" --from-literal="DATABASE_URL=postgresql+psycopg2://geodashboard:$databasePassword@postgres:5432/geodashboard" --from-literal="SECRET_KEY=$jwtSecret"
 	if ($LASTEXITCODE -ne 0) {
-		throw "Unable to create the local GeoDashboard secret."
+		throw "Unable to create the local Geography Dashboard secret."
 	}
 }
 
@@ -77,5 +77,5 @@ if ($EnableAI) {
     kubectl rollout status deployment/core-api --namespace $namespace --timeout=180s
 }
 
-Write-Host "GeoDashboard is available at http://localhost:8080"
+Write-Host "Geography Dashboard is available at http://localhost:8080"
 Write-Host "Grafana is available at http://localhost:3000"

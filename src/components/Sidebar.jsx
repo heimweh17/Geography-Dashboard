@@ -1,6 +1,6 @@
 import WorkspaceDialog from './WorkspaceDialog';
 import { parseFileToPoints } from '../utlis/datasetPreview';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Search, Map, Moon, Sun, Download, Layers, X, Github, Mail, Globe, TrendingUp, ChevronDown, User, Star, Sparkles } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -32,7 +32,26 @@ const Sidebar = ({
   const { user, token, isAuthed, signOut } = useAuth();
   const [cityInput, setCityInput] = useState('');
   const [showAuthorModal, setShowAuthorModal] = useState(false);
-  const [showComparisonModal, setShowComparisonModal] = useState(false);
+  const [showComparisonModal, setShowComparisonModal] = useState(() => window.location.pathname === '/compare');
+  useEffect(() => {
+    const syncRoute = () => setShowComparisonModal(window.location.pathname === '/compare');
+    window.addEventListener('popstate', syncRoute);
+    return () => window.removeEventListener('popstate', syncRoute);
+  }, []);
+
+  function openComparison() {
+    window.history.pushState({ fromMap: true }, '', '/compare');
+    setShowComparisonModal(true);
+  }
+
+  function closeComparison() {
+    if (window.history.state?.fromMap) {
+      window.history.back();
+    } else {
+      window.history.pushState(null, '', '/');
+      setShowComparisonModal(false);
+    }
+  }
   const [showDropdown, setShowDropdown] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
@@ -158,8 +177,8 @@ const Sidebar = ({
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-forest-900 dark:text-forest-200 flex items-center gap-2">
-              <Map size={24} />
-              GeoAnalytica
+              <Map size={24} className="shrink-0" />
+              Geography Dashboard
             </h1>
             <button 
               aria-label="Switch color theme" onClick={toggleTheme}
@@ -302,7 +321,7 @@ const Sidebar = ({
               </button>
               
               <button
-                onClick={() => setShowComparisonModal(true)}
+                onClick={openComparison}
                 className="flex items-center justify-center gap-2 p-3 bg-forest-700 dark:bg-forest-800 text-white hover:bg-forest-800 dark:hover:bg-forest-700 transition-colors rounded-md border border-forest-600"
               >
                 <TrendingUp size={18} />
@@ -472,7 +491,7 @@ const Sidebar = ({
           />
 
           {showAuthorModal && (
-            <WorkspaceDialog label="About GeoAnalytica" size="form" onClose={() => setShowAuthorModal(false)}>
+            <WorkspaceDialog label="About Geography Dashboard" size="form" onClose={() => setShowAuthorModal(false)}>
               <div className="bg-white dark:bg-forest-950 border border-forest-300 dark:border-forest-700 shadow-2xl w-full max-w-sm relative p-6 rounded-md">
                 <button 
                   aria-label="Close" onClick={() => setShowAuthorModal(false)}
@@ -524,7 +543,7 @@ const Sidebar = ({
 
           <ComparisonModal
             isOpen={showComparisonModal}
-            onClose={() => setShowComparisonModal(false)}
+            onClose={closeComparison}
           />
 
           <AnalysisResultsModal
