@@ -24,8 +24,9 @@ import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import { generateComparativeInsights, calculateSimilarityScore } from '../utlis/generateInsights';
 import { MAP_TILE_ATTRIBUTION, MAP_TILE_URL } from '../config/mapTiles';
 
-import { iconForPlace, locationIcon } from '../config/cartography';
-import { DATA_LAYERS, placeCategory } from '../config/mapLayers';
+import MapLegend from './MapLegend';
+import { placeIcons, locationIcon } from '../config/cartography';
+import { DATA_LAYERS, markerCategory } from '../config/mapLayers';
 
 const ComparisonModal = ({ isOpen, onClose }) => {
   const [city1Name, setCity1Name] = useState('');
@@ -313,8 +314,8 @@ const ComparisonModal = ({ isOpen, onClose }) => {
 
             {/* Maps */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <CityMapCard data={comparisonData.city1} label="City A" radius={radius} />
-              <CityMapCard data={comparisonData.city2} label="City B" radius={radius} />
+              <CityMapCard layers={comparisonData.amenities} data={comparisonData.city1} label="City A" radius={radius} />
+              <CityMapCard layers={comparisonData.amenities} data={comparisonData.city2} label="City B" radius={radius} />
             </div>
 
             {/* Charts */}
@@ -417,7 +418,7 @@ const ComparisonModal = ({ isOpen, onClose }) => {
 };
 
 // Helper components OUTSIDE the main component
-const CityMapCard = ({ data, label, radius }) => {
+const CityMapCard = ({ data, label, radius, layers }) => {
   const pattern = interpretSpatialPattern(data.spatialPattern);
   
   return (
@@ -437,7 +438,8 @@ const CityMapCard = ({ data, label, radius }) => {
       </div>
       
       <div className="mb-4 h-64 border border-mineral-300 dark:border-mineral-600 rounded-md overflow-hidden relative">
-        <SimpleMap 
+        <MapLegend categories={data.data.slice(0, 50).map(item => markerCategory(item.tags, layers))} />
+        <SimpleMap layers={layers}
           center={data.coordinates} 
           data={data.data} 
           radius={radius}
@@ -467,7 +469,7 @@ const CityMapCard = ({ data, label, radius }) => {
   );
 };
 
-const SimpleMap = ({ center, data, radius, cityName }) => {
+const SimpleMap = ({ center, data, radius, cityName, layers }) => {
   return (
     <MapContainer
       center={center}
@@ -510,9 +512,10 @@ const SimpleMap = ({ center, data, radius, cityName }) => {
         
         if (!lat || !lon || isNaN(lat) || isNaN(lon)) return null;
         
+        const category = markerCategory(item.tags, layers);
         return (
-          <Marker icon={iconForPlace(item.tags)}
-            key={`${item.id || index}`}
+          <Marker icon={placeIcons[category]} title={category.replaceAll('_', ' ')}
+            key={`${item.type}-${item.id ?? index}`}
             position={[parseFloat(lat), parseFloat(lon)]}
           >
             <Popup>
@@ -521,7 +524,7 @@ const SimpleMap = ({ center, data, radius, cityName }) => {
                   {item.tags?.name || 'Unnamed'}
                 </div>
                 <div style={{ color: 'var(--quiet)' }}>
-                  {placeCategory(item.tags)}
+                  {category.replaceAll('_', ' ')}
                 </div>
                 {item.tags?.cuisine && (
                   <div style={{ color: 'var(--quiet)' }}>

@@ -2,7 +2,7 @@
 // @ts-nocheck
 import WorkspaceDialog from './components/WorkspaceDialog';
 import orlandoSnapshot from './assets/orlando-restaurants.json';
-import { placeCategory } from './config/mapLayers';
+import { placeCategory, markerCategory } from './config/mapLayers';
 import { downloadCSV } from './utlis/exportUtils';
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
@@ -369,6 +369,7 @@ function App() {
         )}
 
         <MapComponent
+          layers={amenities}
           center={coordinates}
           data={filteredData}
           isHeatmapMode={showHeatmap}
@@ -415,9 +416,9 @@ function App() {
               </button>
             </div>
 
-            {(selectedPlace.tags?.amenity || selectedPlace.tags?.cuisine) && (
+            {(selectedPlace.tags) && (
               <p className="text-xs text-forest-600 dark:text-forest-400 mb-1">
-                {selectedPlace.tags?.amenity}
+                {markerCategory(selectedPlace.tags, amenities).replaceAll('_', ' ')}
                 {selectedPlace.tags?.cuisine && ` · ${selectedPlace.tags.cuisine}`}
               </p>
             )}

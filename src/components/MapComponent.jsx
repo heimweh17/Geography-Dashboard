@@ -16,7 +16,9 @@ import L from 'leaflet';
 import 'leaflet.heat';
 import { MAP_TILE_ATTRIBUTION, MAP_TILE_URL } from '../config/mapTiles';
 
-import { iconForPlace, locationIcon } from '../config/cartography';
+import MapLegend from './MapLegend';
+import { markerCategory } from '../config/mapLayers';
+import { placeIcons, locationIcon } from '../config/cartography';
 
 // ====== HELPERS ======
 const MapUpdater = ({ center }) => {
@@ -45,6 +47,7 @@ const HeatmapLayer = ({ points }) => {
 const MapComponent = ({
   center,
   data,
+  layers,
   isHeatmapMode,
   searchRadius,
   onShapeCreated,
@@ -166,11 +169,13 @@ const MapComponent = ({
               return null;
             }
 
+            const category = markerCategory(tags, layers);
             return (
               <Marker
-                key={item.id}
+                key={item.type + ":" + item.id}
                 position={[lat, lon]}
-                icon={iconForPlace(tags)}
+                icon={placeIcons[category]}
+                title={category.replaceAll('_', ' ') + (tags.name ? " · " + tags.name : "")}
                 eventHandlers={{
                   click: () => onMarkerClick(item, false),
                 }}
@@ -180,6 +185,7 @@ const MapComponent = ({
                     <h3 className="font-bold text-base">
                       {tags.name || 'Unnamed'}
                     </h3>
+                    <p className="capitalize">{category.replaceAll('_', ' ')}</p>
                     {tags.cuisine && (
                       <p className="text-xs text-mineral-500 mb-1">
                         {tags.cuisine}
@@ -198,6 +204,7 @@ const MapComponent = ({
           })
         )}
       </MapContainer>
+      {!isHeatmapMode && <MapLegend categories={safeData.map(item => markerCategory(item.tags, layers))} />}
 
       {/* ROUTE INFO BOX */}
       {routeData && (
