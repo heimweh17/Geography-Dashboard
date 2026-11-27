@@ -20,14 +20,14 @@ export const generateComparativeInsights = (comparisonData) => {
     
     insights.push({
       icon: "🏙️",
-      text: `<strong>${higher} has ${ratio.toFixed(1)}× higher amenity density</strong> than ${lower} (${higherDensity.toFixed(1)} vs ${lowerDensity.toFixed(1)} places/km²).`,
+      text: `${higher} has ${ratio.toFixed(1)}× higher amenity density than ${lower} (${higherDensity.toFixed(1)} vs ${lowerDensity.toFixed(1)} places/km²).`,
       type: "density",
       importance: "high"
     });
   } else {
     insights.push({
       icon: "⚖️",
-      text: `<strong>Both cities have similar amenity density</strong> (~${city1.density.toFixed(1)} places/km²).`,
+      text: `Both cities have similar amenity density (~${city1.density.toFixed(1)} places/km²).`,
       type: "density",
       importance: "low"
     });
@@ -43,7 +43,7 @@ export const generateComparativeInsights = (comparisonData) => {
     
     insights.push({
       icon: "🌍",
-      text: `<strong>${moreDiverse} is more diverse in amenity types</strong> (Shannon index ${higherIndex.toFixed(2)} vs ${lowerIndex.toFixed(2)}) — more variety packed into the same area.`,
+      text: `${moreDiverse} is more diverse in amenity types (Shannon index ${higherIndex.toFixed(2)} vs ${lowerIndex.toFixed(2)}) — more variety packed into the same area.`,
       type: "diversity",
       importance: "high"
     });
@@ -59,7 +59,7 @@ export const generateComparativeInsights = (comparisonData) => {
   if (Math.abs(nni1 - nni2) > 0.3) {
     insights.push({
       icon: "📍",
-      text: `<strong>${city1Short}'s amenities are ${pattern1}</strong>, while ${city2Short}'s are ${pattern2} (NNI ${nni1.toFixed(2)} vs ${nni2.toFixed(2)}).`,
+      text: `${city1Short}'s amenities are ${pattern1}, while ${city2Short}'s are ${pattern2} (NNI ${nni1.toFixed(2)} vs ${nni2.toFixed(2)}).`,
       type: "spatial",
       importance: "high"
     });
@@ -127,7 +127,7 @@ const findCitySpecializations = (city1, city2, city1Short, city2Short) => {
     
     insights.push({
       icon: emoji,
-      text: `<strong>${item.leader} leans towards ${amenityName}</strong>: ${item.leaderShare.toFixed(0)}% of amenities vs ${item.followerShare.toFixed(0)}% in the other city.`,
+      text: `${item.leader} leans towards ${amenityName}: ${item.leaderShare.toFixed(0)}% of amenities vs ${item.followerShare.toFixed(0)}% in the other city.`,
       type: "specialization",
       importance: "high"
     });
@@ -147,7 +147,7 @@ const compareCuisines = (city1, city2, city1Short, city2Short) => {
   const uniqueTo2 = cuisines2.filter(c => !cuisines1.includes(c));
 
   if (uniqueTo1.length > 0 || uniqueTo2.length > 0) {
-    let text = "<strong>Cuisine diversity</strong>: ";
+    let text = "Cuisine diversity: ";
     
     if (shared.length > 0) {
       text += `Both share ${shared.slice(0, 3).join(', ')}${shared.length > 3 ? '...' : ''}. `;
@@ -186,7 +186,7 @@ const compareChains = (city1, city2, city1Short, city2Short) => {
     
     return {
       icon: "🏢",
-      text: `<strong>${moreChains} has more chain businesses</strong> (${higherPct.toFixed(0)}% chains vs ${lowerPct.toFixed(0)}% in ${moreIndependent}).`,
+      text: `${moreChains} has more chain businesses (${higherPct.toFixed(0)}% chains vs ${lowerPct.toFixed(0)}% in ${moreIndependent}).`,
       type: "chains",
       importance: "medium"
     };
@@ -207,7 +207,7 @@ const compareAccessibility = (city1, city2, city1Short, city2Short) => {
     
     return {
       icon: "♿",
-      text: `<strong>${moreAccessible} is more accessibility-friendly</strong> (${higherPct.toFixed(0)}% of places marked wheelchair accessible).`,
+      text: `${moreAccessible} is more accessibility-friendly (${higherPct.toFixed(0)}% of places marked wheelchair accessible).`,
       type: "accessibility",
       importance: "medium"
     };

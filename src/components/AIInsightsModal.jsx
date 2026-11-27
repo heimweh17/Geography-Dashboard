@@ -1,3 +1,4 @@
+import WorkspaceDialog from './WorkspaceDialog';
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Sparkles, Loader2, AlertCircle } from 'lucide-react';
@@ -30,22 +31,22 @@ const AIInsightsModal = ({ isOpen, onClose, analysisResult, token, onGenerate })
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div role="dialog" aria-modal="true" aria-label="AI insights" onKeyDown={e => { if (e.key === "Escape") onClose(); }} className="bg-white dark:bg-blue-950 border-2 border-blue-300 dark:border-blue-800 shadow-2xl w-full max-w-2xl relative rounded-xl overflow-hidden">
+    <WorkspaceDialog label="AI insights" size="reading" onClose={onClose}>
+      <div className="bg-white dark:bg-forest-950 border border-forest-300 dark:border-forest-800 shadow-2xl w-full max-w-2xl relative rounded-xl overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-blue-200 dark:border-blue-800 bg-gradient-to-r from-blue-50 to-white dark:from-blue-950 dark:to-blue-950">
+        <div className="dialog-heading">
           <div className="flex items-center gap-3">
-            <Sparkles className="text-blue-600 dark:text-blue-400" size={24} />
+            <Sparkles className="text-forest-600 dark:text-forest-400" size={24} />
             <div>
-              <div className="text-lg font-bold text-blue-900 dark:text-blue-100">AI Insights</div>
-              <div className="text-xs text-blue-700 dark:text-blue-300 opacity-80">
+              <div className="dialog-title">AI insights</div>
+              <div className="text-xs text-forest-700 dark:text-forest-300 opacity-80">
                 Limit: 1 insight per user per 7 days
               </div>
             </div>
           </div>
           <button
             autoFocus onClick={onClose}
-            className="p-2 rounded-md text-blue-600 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-100 hover:bg-blue-100 dark:hover:bg-blue-900"
+            className="p-2 rounded-md text-forest-600 hover:text-forest-900 dark:text-forest-300 dark:hover:text-forest-100 hover:bg-forest-100 dark:hover:bg-forest-900"
             aria-label="Close"
           >
             <X size={20} />
@@ -55,8 +56,8 @@ const AIInsightsModal = ({ isOpen, onClose, analysisResult, token, onGenerate })
         {/* Content */}
         <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
           {!analysisResult && (
-            <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-700 text-center">
-              <p className="text-sm text-blue-900 dark:text-blue-100">
+            <div className="p-4 rounded-lg bg-forest-50 dark:bg-forest-900/40 border border-forest-200 dark:border-forest-700 text-center">
+              <p className="text-sm text-forest-900 dark:text-forest-100">
                 Run an analysis first to generate insights.
               </p>
             </div>
@@ -81,34 +82,34 @@ const AIInsightsModal = ({ isOpen, onClose, analysisResult, token, onGenerate })
 
           {loading && (
             <div className="flex flex-col items-center justify-center py-12">
-              <Loader2 className="text-blue-600 dark:text-blue-400 animate-spin" size={32} />
-              <p className="text-sm text-blue-700 dark:text-blue-300 mt-4">Generating insight...</p>
+              <Loader2 className="text-forest-600 dark:text-forest-400 animate-spin" size={32} />
+              <p className="text-sm text-forest-700 dark:text-forest-300 mt-4">Generating insight...</p>
             </div>
           )}
 
           {insight && !loading && (
             <div className="space-y-4">
               {/* Narrative */}
-              <div className="p-4 rounded-lg bg-white dark:bg-blue-900 border border-blue-200 dark:border-blue-700">
-                <div className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">
+              <div className="p-4 rounded-lg bg-white dark:bg-forest-900 border border-forest-200 dark:border-forest-700">
+                <div className="text-sm font-semibold text-forest-900 dark:text-forest-100 mb-2">
                   Analysis Summary
                 </div>
-                <p className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed whitespace-pre-wrap break-words">
+                <p className="text-sm text-forest-800 dark:text-forest-200 leading-relaxed whitespace-pre-wrap break-words">
                   {insight.text || (typeof insight === 'string' ? insight : JSON.stringify(insight, null, 2))}
                 </p>
               </div>
 
               {/* Highlights */}
               {insight.highlights && insight.highlights.length > 0 && (
-                <div className="p-4 rounded-lg bg-white dark:bg-blue-900 border border-blue-200 dark:border-blue-700">
-                  <div className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-3">
+                <div className="p-4 rounded-lg bg-white dark:bg-forest-900 border border-forest-200 dark:border-forest-700">
+                  <div className="text-sm font-semibold text-forest-900 dark:text-forest-100 mb-3">
                     Key Findings
                   </div>
                   <ul className="space-y-2">
                     {insight.highlights.map((highlight, idx) => (
                       <li key={idx} className="flex items-start gap-2">
-                        <span className="text-blue-600 dark:text-blue-400 mt-1.5">•</span>
-                        <span className="text-sm text-blue-800 dark:text-blue-200 flex-1">
+                        <span className="text-forest-600 dark:text-forest-400 mt-1.5">•</span>
+                        <span className="text-sm text-forest-800 dark:text-forest-200 flex-1">
                           {highlight}
                         </span>
                       </li>
@@ -119,11 +120,11 @@ const AIInsightsModal = ({ isOpen, onClose, analysisResult, token, onGenerate })
 
               {/* Method / Assumptions */}
               {(insight.meta?.method || insight.method) && (
-                <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-700">
-                  <div className="text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">
+                <div className="p-3 rounded-lg bg-mineral-50 dark:bg-mineral-900/40 border border-mineral-200 dark:border-mineral-700">
+                  <div className="text-xs font-semibold text-mineral-600 dark:text-mineral-400 mb-1">
                     Method / Assumptions
                   </div>
-                  <div className="text-xs text-gray-700 dark:text-gray-300">
+                  <div className="text-xs text-mineral-700 dark:text-mineral-300">
                     {insight.meta?.method || insight.method}
                   </div>
                 </div>
@@ -131,7 +132,7 @@ const AIInsightsModal = ({ isOpen, onClose, analysisResult, token, onGenerate })
 
               {/* Meta info */}
               {insight.meta && (
-                <div className="text-xs text-gray-500 dark:text-gray-400 text-center pt-2 border-t border-gray-200 dark:border-gray-700">
+                <div className="text-xs text-mineral-500 dark:text-mineral-400 text-center pt-2 border-t border-mineral-200 dark:border-mineral-700">
                   Generated using {insight.meta.model || 'UF NaviGator'} • {insight.meta.generated_at ? new Date(insight.meta.generated_at).toLocaleString() : ''}
                 </div>
               )}
@@ -143,7 +144,7 @@ const AIInsightsModal = ({ isOpen, onClose, analysisResult, token, onGenerate })
             <div className="pt-4">
               <button
                 onClick={handleGenerate}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-forest-600 hover:bg-forest-700 dark:bg-forest-700 dark:hover:bg-forest-600 text-white rounded-lg transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!token}
               >
                 <Sparkles size={18} />
@@ -158,7 +159,7 @@ const AIInsightsModal = ({ isOpen, onClose, analysisResult, token, onGenerate })
           )}
         </div>
       </div>
-    </div>,
+    </WorkspaceDialog>,
     document.body
   );
 };

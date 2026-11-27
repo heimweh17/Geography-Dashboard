@@ -1,3 +1,4 @@
+import WorkspaceDialog from './WorkspaceDialog';
 import React, { useState } from 'react';
 import { X, Star, Save } from 'lucide-react';
 
@@ -28,18 +29,18 @@ const SavePlaceModal = ({ isOpen, onClose, place, onSave }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-white dark:bg-gray-900 w-full max-w-md rounded-lg shadow-2xl border border-gray-300 dark:border-gray-700">
+    <WorkspaceDialog label="Save place" size="form" onClose={onClose}>
+      <div className="bg-white dark:bg-mineral-900 w-full max-w-md rounded-lg shadow-2xl border border-mineral-300 dark:border-mineral-700">
         
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            <Star className="text-yellow-500" size={24} />
+        <div className="dialog-heading">
+          <h2 className="text-xl font-bold text-mineral-900 dark:text-mineral-100 flex items-center gap-2">
+            <Star className="text-forest-500" size={24} />
             Save Place
           </h2>
           <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition"
+            aria-label="Close" onClick={onClose}
+            className="text-mineral-500 hover:text-mineral-700 dark:text-mineral-400 dark:hover:text-mineral-200 transition"
           >
             <X size={24} />
           </button>
@@ -49,11 +50,11 @@ const SavePlaceModal = ({ isOpen, onClose, place, onSave }) => {
         <div className="p-6 space-y-4">
           
           {/* Place Info */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 p-4 rounded-lg">
-            <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-1">
+          <div className="bg-forest-50 dark:bg-forest-900/20 border border-forest-200 dark:border-forest-700 p-4 rounded-lg">
+            <h3 className="font-bold text-mineral-900 dark:text-mineral-100 mb-1">
               {place.tags?.name || 'Unnamed Place'}
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-mineral-600 dark:text-mineral-400">
               {place.tags?.amenity || 'Unknown type'}
               {place.tags?.cuisine && ` • ${place.tags.cuisine}`}
             </p>
@@ -61,7 +62,7 @@ const SavePlaceModal = ({ isOpen, onClose, place, onSave }) => {
 
           {/* Category Selection */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-bold text-mineral-700 dark:text-mineral-300 mb-2">
               Category
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -71,8 +72,8 @@ const SavePlaceModal = ({ isOpen, onClose, place, onSave }) => {
                   onClick={() => setCategory(cat)}
                   className={`p-2 text-sm font-medium rounded-lg border-2 transition ${
                     category === cat
-                      ? 'border-blue-600 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
-                      : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:border-gray-400'
+                      ? 'border-forest-600 bg-forest-100 dark:bg-forest-900 text-forest-800 dark:text-forest-200'
+                      : 'border-mineral-200 dark:border-mineral-700 bg-white dark:bg-mineral-800 text-mineral-700 dark:text-mineral-300 hover:border-mineral-400'
                   }`}
                 >
                   {cat}
@@ -83,7 +84,7 @@ const SavePlaceModal = ({ isOpen, onClose, place, onSave }) => {
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-bold text-mineral-700 dark:text-mineral-300 mb-2">
               Notes (Optional)
             </label>
             <textarea
@@ -92,9 +93,9 @@ const SavePlaceModal = ({ isOpen, onClose, place, onSave }) => {
               placeholder="Add personal notes about this place..."
               maxLength={200}
               rows={3}
-              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+              className="w-full p-3 border border-mineral-300 dark:border-mineral-600 rounded-lg bg-white dark:bg-mineral-800 text-mineral-900 dark:text-mineral-100 focus:ring-2 focus:ring-forest-500 outline-none resize-none"
             />
-            <div className="text-xs text-gray-500 dark:text-gray-400 text-right mt-1">
+            <div className="text-xs text-mineral-500 dark:text-mineral-400 text-right mt-1">
               {notes.length}/200 characters
             </div>
           </div>
@@ -103,7 +104,7 @@ const SavePlaceModal = ({ isOpen, onClose, place, onSave }) => {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 p-3 bg-forest-600 hover:bg-forest-700 text-white rounded-lg transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? (
               <>
@@ -119,7 +120,7 @@ const SavePlaceModal = ({ isOpen, onClose, place, onSave }) => {
           </button>
         </div>
       </div>
-    </div>
+    </WorkspaceDialog>
   );
 };
 

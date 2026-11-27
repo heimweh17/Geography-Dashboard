@@ -1,3 +1,5 @@
+import { seriesColors } from '../config/cartography';
+import WorkspaceDialog from './WorkspaceDialog';
 import React, { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
@@ -38,18 +40,7 @@ import {
 
 /** ---------- Helpers ---------- */
 
-const PIE_COLORS = [
-  '#3b82f6', // blue-500
-  '#10b981', // emerald-500
-  '#f59e0b', // amber-500
-  '#ef4444', // red-500
-  '#8b5cf6', // violet-500
-  '#06b6d4', // cyan-500
-  '#f97316', // orange-500
-  '#22c55e', // green-500
-  '#eab308', // yellow-500
-  '#60a5fa', // blue-400
-];
+
 
 const safeNum = (v, fallback = 0) => {
   const n = Number(v);
@@ -57,10 +48,10 @@ const safeNum = (v, fallback = 0) => {
 };
 
 const colorScale = (value, max) => {
-  if (!max) return 'rgba(99,102,241,0.12)'; // indigo-ish
+  if (!max) return 'rgba(45,109,81,0.12)'; // indigo-ish
   const t = Math.max(0, Math.min(1, value / max));
   const alpha = 0.10 + 0.45 * t;
-  return `rgba(59,130,246,${alpha})`; // blue-ish
+  return `rgba(45,109,81,${alpha})`; // blue-ish
 };
 
 const hashString = (s) => {
@@ -74,9 +65,9 @@ const hashString = (s) => {
 };
 
 const colorForCategory = (category) => {
-  if (!category) return '#3b82f6'; // default blue
-  const idx = hashString(String(category)) % PIE_COLORS.length;
-  return PIE_COLORS[idx];
+  if (!category) return '#73916a'; // default blue
+  const idx = hashString(String(category)) % seriesColors.length;
+  return seriesColors[idx];
 };
 
 const svgToDataUrl = (svg) => {
@@ -84,10 +75,10 @@ const svgToDataUrl = (svg) => {
   return `data:image/svg+xml;base64,${b64}`;
 };
 
-const createOsmMarkerIcon = ({ color = '#3b82f6', centroid = false }) => {
+const createOsmMarkerIcon = ({ color = '#73916a', centroid = false }) => {
   // Create a true Leaflet image icon using an SVG data URL (OSM-style pin).
   // Positioning relies ONLY on iconAnchor; no CSS transforms inside the SVG or on the element.
-  const fill = centroid ? '#10b981' : color;
+  const fill = centroid ? '#255f48' : color;
   const svg = `
 <svg width="26" height="41" viewBox="0 0 26 41" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -254,13 +245,13 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-white dark:bg-blue-950 border-2 border-blue-300 dark:border-blue-800 shadow-2xl w-full max-w-6xl relative rounded-xl overflow-hidden">
+    <WorkspaceDialog label="Dataset analysis" size="report" onClose={onClose}>
+      <div className="bg-white dark:bg-forest-950 border border-forest-300 dark:border-forest-800 shadow-2xl w-full max-w-6xl relative rounded-xl overflow-hidden">
         {/* Top bar */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-blue-200 dark:border-blue-800 bg-gradient-to-r from-blue-50 to-white dark:from-blue-950 dark:to-blue-950">
+        <div className="dialog-heading">
           <div>
-            <div className="text-lg font-bold text-blue-900 dark:text-blue-100">Dataset Analysis</div>
-            <div className="text-xs text-blue-700 dark:text-blue-300 opacity-80">
+            <div className="dialog-title">Dataset analysis</div>
+            <div className="text-xs text-forest-700 dark:text-forest-300 opacity-80">
               {params?.category_field ? `Category field: ${params.category_field}` : ' '}
               {params?.dbscan_eps_km != null ? ` • DBSCAN eps: ${params.dbscan_eps_km} km` : ''}
               {params?.grid_cell_size != null ? ` • Grid: ${params.grid_cell_size}` : ''}
@@ -270,7 +261,7 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
           <div className="flex items-center gap-2">
             <button
               onClick={handleDownloadJSON}
-              className="flex items-center gap-2 px-3 py-2 rounded-md bg-purple-700 hover:bg-purple-800 text-white text-sm"
+              className="flex items-center gap-2 px-3 py-2 rounded-md bg-forest-700 hover:bg-forest-800 text-white text-sm"
             >
               <Download size={16} />
               JSON
@@ -278,7 +269,7 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
 
             <button
               onClick={onClose}
-              className="p-2 rounded-md text-blue-600 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-100 hover:bg-blue-100 dark:hover:bg-blue-900"
+              className="p-2 rounded-md text-forest-600 hover:text-forest-900 dark:text-forest-300 dark:hover:text-forest-100 hover:bg-forest-100 dark:hover:bg-forest-900"
               aria-label="Close"
             >
               <X size={20} />
@@ -286,7 +277,7 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 h-[80vh]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 lg:h-[76vh]">
           {/* Map */}
           <div className="relative h-[42vh] lg:h-full">
             {/* tiny map overlay controls */}
@@ -296,8 +287,8 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
                 className={[
                   'flex items-center gap-2 px-3 py-2 rounded-md text-sm border shadow-sm',
                   showPins
-                    ? 'bg-blue-600 text-white border-blue-600'
-                    : 'bg-white/90 dark:bg-blue-950/80 text-blue-900 dark:text-blue-100 border-blue-200 dark:border-blue-700',
+                    ? 'bg-forest-600 text-white border-forest-600'
+                    : 'bg-white/90 dark:bg-forest-950/80 text-forest-900 dark:text-forest-100 border-forest-200 dark:border-forest-700',
                 ].join(' ')}
               >
                 <MapPin size={16} />
@@ -308,8 +299,8 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
                 className={[
                   'flex items-center gap-2 px-3 py-2 rounded-md text-sm border shadow-sm',
                   showGrid
-                    ? 'bg-blue-600 text-white border-blue-600'
-                    : 'bg-white/90 dark:bg-blue-950/80 text-blue-900 dark:text-blue-100 border-blue-200 dark:border-blue-700',
+                    ? 'bg-forest-600 text-white border-forest-600'
+                    : 'bg-white/90 dark:bg-forest-950/80 text-forest-900 dark:text-forest-100 border-forest-200 dark:border-forest-700',
                 ].join(' ')}
               >
                 <Layers size={16} />
@@ -319,7 +310,7 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
               {selectedCategory && (
                 <button
                   onClick={() => setSelectedCategory(null)}
-                  className="px-3 py-2 rounded-md text-sm bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+                  className="px-3 py-2 rounded-md text-sm bg-forest-600 hover:bg-forest-700 text-white shadow-sm"
                 >
                   Clear Filter
                 </button>
@@ -418,7 +409,7 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
 
                   const isActive = activeClusterId === c.cluster_id;
 
-                  const centroidIcon = createOsmMarkerIcon({ color: '#10b981', centroid: true });
+                  const centroidIcon = createOsmMarkerIcon({ color: '#255f48', centroid: true });
 
                   return (
                     <Marker
@@ -445,29 +436,29 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
 
             {/* Grid legend */}
             {showGrid && Number.isFinite(maxGridCount) && maxGridCount > 0 && (
-              <div className="absolute z-[500] bottom-3 right-3 p-3 rounded-md bg-white/90 dark:bg-blue-950/85 border border-blue-200 dark:border-blue-700 shadow">
-                <div className="text-xs font-semibold text-blue-900 dark:text-blue-100 mb-1">
+              <div className="absolute z-[500] bottom-3 right-3 p-3 rounded-md bg-white/90 dark:bg-forest-950/85 border border-forest-200 dark:border-forest-700 shadow">
+                <div className="text-xs font-semibold text-forest-900 dark:text-forest-100 mb-1">
                   Density (count)
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-blue-900 dark:text-blue-200">0</span>
+                  <span className="text-[10px] text-forest-900 dark:text-forest-200">0</span>
                   <div
                     className="h-2 w-28 rounded-sm"
                     style={{
                       background:
-                        'linear-gradient(to right, rgba(59,130,246,0.12), rgba(59,130,246,0.55))',
+                        'linear-gradient(to right, rgba(45,109,81,0.12), rgba(45,109,81,0.55))',
                     }}
                   />
-                  <span className="text-[10px] text-blue-900 dark:text-blue-200">{maxGridCount}</span>
+                  <span className="text-[10px] text-forest-900 dark:text-forest-200">{maxGridCount}</span>
                 </div>
               </div>
             )}
           </div>
 
           {/* Right panel */}
-          <div className="h-full overflow-y-auto bg-blue-50 dark:bg-blue-900/30 border-l border-blue-200 dark:border-blue-800">
+          <div className="h-full overflow-y-auto bg-forest-50 dark:bg-forest-900/30 border-l border-forest-200 dark:border-forest-800">
             {/* Tabs */}
-            <div className="sticky top-0 z-10 bg-blue-50/95 dark:bg-blue-950/70 backdrop-blur border-b border-blue-200 dark:border-blue-800 px-5 py-3">
+            <div className="sticky top-0 z-10 bg-forest-50/95 dark:bg-forest-950/70 backdrop-blur border-b border-forest-200 dark:border-forest-800 px-5 py-3">
               <div className="flex items-center gap-2">
                 <TabBtn
                   active={tab === 'overview'}
@@ -490,7 +481,7 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
               </div>
 
               {selectedCategory && (
-                <div className="mt-3 text-xs text-blue-900 dark:text-blue-100">
+                <div className="mt-3 text-xs text-forest-900 dark:text-forest-100">
                   Filtering: <span className="font-bold">{selectedCategory}</span>{' '}
                   <span className="opacity-70">({filteredPoints.length} points)</span>
                 </div>
@@ -507,11 +498,11 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
               </div>
 
               {/* BBox */}
-              <div className="p-4 rounded-lg bg-white dark:bg-blue-900 border border-blue-200 dark:border-blue-700">
-                <div className="text-xs text-blue-600 dark:text-blue-300 font-semibold mb-2">
+              <div className="p-4 rounded-lg bg-white dark:bg-forest-900 border border-forest-200 dark:border-forest-700">
+                <div className="text-xs text-forest-600 dark:text-forest-300 font-semibold mb-2">
                   Bounding Box (BBox)
                 </div>
-                <div className="text-xs text-blue-900 dark:text-blue-100 break-words">
+                <div className="text-xs text-forest-900 dark:text-forest-100 break-words">
                   {bbox ? JSON.stringify(bbox) : 'No bbox returned'}
                 </div>
               </div>
@@ -520,22 +511,22 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
               {tab === 'overview' && (
                 <>
                   {/* Categories quick list */}
-                  <div className="p-4 rounded-lg bg-white dark:bg-blue-900 border border-blue-200 dark:border-blue-700">
+                  <div className="p-4 rounded-lg bg-white dark:bg-forest-900 border border-forest-200 dark:border-forest-700">
                     <div className="flex items-center justify-between mb-2">
-                      <div className="text-sm font-bold text-blue-900 dark:text-blue-100">
+                      <div className="text-sm font-bold text-forest-900 dark:text-forest-100">
                         Category Counts
                         <span className="text-xs font-normal opacity-70 ml-2">(click to filter)</span>
                       </div>
                       <button
                         onClick={() => setSelectedCategory(null)}
-                        className="text-xs px-2 py-1 rounded-md bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200"
+                        className="text-xs px-2 py-1 rounded-md bg-forest-100 dark:bg-forest-800 text-forest-800 dark:text-forest-200"
                       >
                         Clear
                       </button>
                     </div>
 
                     {categories.length === 0 ? (
-                      <div className="text-xs text-blue-700 dark:text-blue-300">
+                      <div className="text-xs text-forest-700 dark:text-forest-300">
                         No category_counts found in analysis result. (Still showing clusters + raw JSON)
                       </div>
                     ) : (
@@ -550,15 +541,15 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
                               className={[
                                 'w-full flex items-center justify-between px-3 py-2 rounded-md border text-xs transition',
                                 selectedCategory === c.key
-                                  ? 'bg-emerald-100 dark:bg-emerald-900/25 border-emerald-400 dark:border-emerald-700'
-                                  : 'bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-900',
+                                  ? 'bg-forest-100 dark:bg-forest-900/25 border-forest-400 dark:border-forest-700'
+                                  : 'bg-forest-50 dark:bg-forest-950/40 border-forest-200 dark:border-forest-700 hover:bg-forest-100 dark:hover:bg-forest-900',
                               ].join(' ')}
                             >
-                              <span className="flex items-center gap-2 font-semibold text-blue-900 dark:text-blue-100">
+                              <span className="flex items-center gap-2 font-semibold text-forest-900 dark:text-forest-100">
                                 <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: swatch }} />
                                 {c.key}
                               </span>
-                              <span className="font-mono text-blue-900 dark:text-blue-100">
+                              <span className="tabular-nums text-forest-900 dark:text-forest-100">
                                 {c.count} • {pct}%
                               </span>
                             </button>
@@ -569,22 +560,22 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
                   </div>
 
                   {/* Cluster list */}
-                  <div className="p-4 rounded-lg bg-white dark:bg-blue-900 border border-blue-200 dark:border-blue-700">
+                  <div className="p-4 rounded-lg bg-white dark:bg-forest-900 border border-forest-200 dark:border-forest-700">
                     <div className="flex items-center justify-between mb-2">
-                      <div className="text-sm font-bold text-blue-900 dark:text-blue-100">
+                      <div className="text-sm font-bold text-forest-900 dark:text-forest-100">
                         Clusters
                         <span className="text-xs font-normal opacity-70 ml-2">(click to focus map)</span>
                       </div>
                       <button
                         onClick={() => setActiveClusterId(null)}
-                        className="text-xs px-2 py-1 rounded-md bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200"
+                        className="text-xs px-2 py-1 rounded-md bg-forest-100 dark:bg-forest-800 text-forest-800 dark:text-forest-200"
                       >
                         Clear
                       </button>
                     </div>
 
                     {clusterData.length === 0 ? (
-                      <div className="text-xs text-blue-700 dark:text-blue-300">No clusters</div>
+                      <div className="text-xs text-forest-700 dark:text-forest-300">No clusters</div>
                     ) : (
                       <div className="max-h-48 overflow-y-auto space-y-2">
                         {clusterData.slice(0, 20).map((c) => (
@@ -594,14 +585,14 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
                             className={[
                               'w-full flex items-center justify-between px-3 py-2 rounded-md border text-xs transition',
                               activeClusterId === c.cluster_id
-                                ? 'bg-emerald-100 dark:bg-emerald-900/25 border-emerald-400 dark:border-emerald-700'
-                                : 'bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-900',
+                                ? 'bg-forest-100 dark:bg-forest-900/25 border-forest-400 dark:border-forest-700'
+                                : 'bg-forest-50 dark:bg-forest-950/40 border-forest-200 dark:border-forest-700 hover:bg-forest-100 dark:hover:bg-forest-900',
                             ].join(' ')}
                           >
-                            <span className="font-semibold text-blue-900 dark:text-blue-100">
+                            <span className="font-semibold text-forest-900 dark:text-forest-100">
                               Cluster {c.name}
                             </span>
-                            <span className="font-mono text-blue-900 dark:text-blue-100">
+                            <span className="tabular-nums text-forest-900 dark:text-forest-100">
                               size {c.size}
                             </span>
                           </button>
@@ -616,21 +607,21 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
               {tab === 'charts' && (
                 <>
                   {/* Category Pie */}
-                  <div className="p-4 rounded-lg bg-white dark:bg-blue-900 border border-blue-200 dark:border-blue-700">
+                  <div className="p-4 rounded-lg bg-white dark:bg-forest-900 border border-forest-200 dark:border-forest-700">
                     <div className="flex items-center justify-between mb-2">
-                      <div className="text-sm font-bold text-blue-900 dark:text-blue-100">
+                      <div className="text-sm font-bold text-forest-900 dark:text-forest-100">
                         Category Pie
                       </div>
                       <button
                         onClick={() => setSelectedCategory(null)}
-                        className="text-xs px-2 py-1 rounded-md bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200"
+                        className="text-xs px-2 py-1 rounded-md bg-forest-100 dark:bg-forest-800 text-forest-800 dark:text-forest-200"
                       >
                         Clear Filter
                       </button>
                     </div>
 
                     {pieData.length === 0 ? (
-                      <div className="text-xs text-blue-700 dark:text-blue-300">
+                      <div className="text-xs text-forest-700 dark:text-forest-300">
                         No category_counts → cannot build pie chart.
                       </div>
                     ) : (
@@ -648,7 +639,7 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
                               className="cursor-pointer outline-none"
                             >
                               {pieData.map((_, i) => (
-                                <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                                <Cell key={i} fill={seriesColors[i % seriesColors.length]} />
                               ))}
                             </Pie>
                             <RTooltip />
@@ -660,21 +651,21 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
                   </div>
 
                   {/* Cluster Bar */}
-                  <div className="p-4 rounded-lg bg-white dark:bg-blue-900 border border-blue-200 dark:border-blue-700">
+                  <div className="p-4 rounded-lg bg-white dark:bg-forest-900 border border-forest-200 dark:border-forest-700">
                     <div className="flex items-center justify-between mb-2">
-                      <div className="text-sm font-bold text-blue-900 dark:text-blue-100">
+                      <div className="text-sm font-bold text-forest-900 dark:text-forest-100">
                         Cluster Sizes
                       </div>
                       <button
                         onClick={() => setActiveClusterId(null)}
-                        className="text-xs px-2 py-1 rounded-md bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200"
+                        className="text-xs px-2 py-1 rounded-md bg-forest-100 dark:bg-forest-800 text-forest-800 dark:text-forest-200"
                       >
                         Clear
                       </button>
                     </div>
 
                     {clusterData.length === 0 ? (
-                      <div className="text-xs text-blue-700 dark:text-blue-300">No clusters</div>
+                      <div className="text-xs text-forest-700 dark:text-forest-300">No clusters</div>
                     ) : (
                       <div className="h-56">
                         <ResponsiveContainer width="100%" height="100%">
@@ -692,7 +683,7 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
                       </div>
                     )}
 
-                    <div className="mt-2 text-xs text-blue-700 dark:text-blue-300 opacity-80 flex items-center gap-2">
+                    <div className="mt-2 text-xs text-forest-700 dark:text-forest-300 opacity-80 flex items-center gap-2">
                       <Filter size={14} />
                       Click a bar to fly-to that cluster on the map.
                     </div>
@@ -702,7 +693,7 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
 
               {/* Raw tab */}
               {tab === 'raw' && (
-                <div className="p-4 rounded-lg bg-blue-950 text-blue-100 border border-blue-800">
+                <div className="p-4 rounded-lg bg-forest-950 text-forest-100 border border-forest-800">
                   <pre className="text-xs overflow-x-auto max-h-[52vh]">
 {JSON.stringify(analysisResult, null, 2)}
                   </pre>
@@ -712,7 +703,7 @@ const AnalysisResultsModal = ({ isOpen, onClose, analysisResult, points, params 
           </div>
         </div>
       </div>
-    </div>,
+    </WorkspaceDialog>,
     document.body
   );
 };
@@ -725,8 +716,8 @@ const TabBtn = ({ active, onClick, icon, label }) => (
     className={[
       'flex items-center gap-2 px-3 py-2 rounded-md text-sm border transition',
       active
-        ? 'bg-blue-600 text-white border-blue-600'
-        : 'bg-white dark:bg-blue-950 text-blue-900 dark:text-blue-100 border-blue-200 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-900',
+        ? 'bg-forest-600 text-white border-forest-600'
+        : 'bg-white dark:bg-forest-950 text-forest-900 dark:text-forest-100 border-forest-200 dark:border-forest-700 hover:bg-forest-100 dark:hover:bg-forest-900',
     ].join(' ')}
   >
     {icon}
@@ -735,11 +726,11 @@ const TabBtn = ({ active, onClick, icon, label }) => (
 );
 
 const KPI = ({ title, value, small = false }) => (
-  <div className="p-4 rounded-lg bg-white dark:bg-blue-900 border border-blue-200 dark:border-blue-700">
-    <div className="text-xs text-blue-600 dark:text-blue-300 font-semibold">{title}</div>
+  <div className="p-4 rounded-lg bg-white dark:bg-forest-900 border border-forest-200 dark:border-forest-700">
+    <div className="text-xs text-forest-600 dark:text-forest-300 font-semibold">{title}</div>
     <div
       className={[
-        'mt-1 text-blue-900 dark:text-blue-100 font-bold',
+        'mt-1 text-forest-900 dark:text-forest-100 font-bold',
         small ? 'text-sm' : 'text-2xl',
         'break-words',
       ].join(' ')}

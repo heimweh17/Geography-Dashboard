@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { ArrowLeft, Database, ChevronDown, ChevronUp } from 'lucide-react';
 import { 
   calculateCircleArea, 
@@ -11,18 +11,7 @@ import {
 } from '../utlis/gisAnalytics';
 
 // COLORFUL palette for Primary Categories (easy to distinguish)
-const PRIMARY_COLORS = [
-  '#0088FE', // bright blue
-  '#00C49F', // teal
-  '#FFBB28', // yellow
-  '#FF8042', // orange
-  '#8884d8', // purple
-  '#82ca9d', // green
-  '#ffc658', // gold
-  '#ff7c7c', // red
-  '#a4de6c', // lime
-  '#d084d0', // pink
-];
+
 
 const AnalyticsPanel = ({ 
   data, 
@@ -123,7 +112,6 @@ const AnalyticsPanel = ({
       diversityIndex: diversityIndex.toFixed(3),
       spatialPattern: spatialPattern.toFixed(3),
       pattern: pattern.pattern,
-      patternIcon: pattern.icon,
       walkabilityScore: walkabilityScore.toFixed(0),
       topAmenities,
       topSubcategories,
@@ -138,22 +126,22 @@ const AnalyticsPanel = ({
 
   if (!metrics) {
     return (
-      <div className="w-full md:w-80 p-6 bg-white dark:bg-gray-900 border-l border-gray-300 dark:border-gray-700 flex flex-col items-center justify-center text-center h-full">
+      <div className="w-full lg:w-80 p-6 bg-white dark:bg-mineral-900 border-l border-mineral-300 dark:border-mineral-700 flex flex-col items-center justify-center text-center h-full">
         {activeFilter ? (
           <>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">No results for "{activeFilter}"</p>
+            <p className="text-mineral-600 dark:text-mineral-400 mb-4">No results for "{activeFilter}"</p>
             <button 
               onClick={onClearFilter} 
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 transition rounded"
+              className="flex items-center gap-2 px-4 py-2 bg-mineral-100 dark:bg-mineral-800 text-mineral-700 dark:text-mineral-300 border border-mineral-300 dark:border-mineral-600 hover:bg-mineral-200 dark:hover:bg-mineral-700 transition rounded"
             >
               <ArrowLeft size={16} /> Go Back
             </button>
           </>
         ) : (
           <>
-            <Database size={24} className="mb-3 text-slate-500" />
+            <Database size={24} className="mb-3 text-mineral-500" />
             <h3 className="font-semibold">{loading ? 'Finding places…' : error ? 'Search unavailable' : 'No places in this area'}</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+            <p className="text-sm text-mineral-600 dark:text-mineral-400 mt-2">
               {loading ? 'Results will appear here.' : error || 'Try a larger radius or choose another map layer.'}
             </p>
           </>
@@ -163,7 +151,7 @@ const AnalyticsPanel = ({
   }
 
   return (
-    <div className="w-full md:w-80 h-full flex flex-col bg-white dark:bg-gray-900 border-l border-gray-300 dark:border-gray-700 overflow-y-auto">
+    <div className="w-full lg:w-80 h-full flex flex-col bg-white dark:bg-mineral-900 border-l border-mineral-300 dark:border-mineral-700 overflow-y-auto">
       <div className="p-6 space-y-6">
         
         {/* Header */}
@@ -171,27 +159,27 @@ const AnalyticsPanel = ({
           <div>
             <button 
               onClick={onClearFilter} 
-              className="flex items-center gap-2 text-sm text-blue-700 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mb-2 transition"
+              className="flex items-center gap-2 text-sm text-forest-700 dark:text-forest-400 hover:text-forest-900 dark:hover:text-forest-300 mb-2 transition"
             >
               <ArrowLeft size={16} /> Back to all results
             </button>
-            <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+            <h2 className="text-lg font-bold text-mineral-900 dark:text-mineral-100">
               Filtered: {activeFilter}
             </h2>
           </div>
         ) : (
           <div>
-            <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-              <Database size={20} className="text-blue-700 dark:text-blue-400" />
+            <h2 className="text-lg font-bold text-mineral-900 dark:text-mineral-100 flex items-center gap-2">
+              <Database size={20} className="text-forest-700 dark:text-forest-400" />
               Analysis Results
             </h2>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs text-mineral-500 dark:text-mineral-400 mt-1">
               {customPolygon ? 'Custom polygon area' : `Radius: ${(searchRadius/1000).toFixed(1)} km`}
             </p>
           </div>
         )}
 
-        <div className="flex items-baseline justify-between gap-3 border-y border-slate-300 py-3 dark:border-slate-700">
+        <div className="flex items-baseline justify-between gap-3 border-y border-mineral-300 py-3 dark:border-mineral-700">
           <div>
             <strong className="block text-3xl tabular-nums">{metrics.total}</strong>
             <span className="text-sm">Mapped places</span>
@@ -202,100 +190,58 @@ const AnalyticsPanel = ({
           </div>
         </div>
 
-        {/* PRIMARY CATEGORIES - COLORFUL PIE CHART */}
         {!activeFilter && metrics.topAmenities.length > 0 && (
-          <div className="border border-gray-300 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50">
-            <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-3 pb-2 border-b border-gray-300 dark:border-gray-600">
-              Primary Categories
-              <span className="text-xs font-normal text-gray-500 dark:text-gray-400 ml-2">
-                (Click to filter)
-              </span>
-            </h3>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={metrics.topAmenities}
-                    cx="50%" 
-                    cy="50%"
-                    innerRadius={45}
-                    outerRadius={75}
-                    paddingAngle={3}
-                    dataKey="value"
-                    onClick={(data) => onCategoryClick(data.key)} 
-                    className="cursor-pointer outline-none"
-                  >
-                    {metrics.topAmenities.map((entry, index) => (
-                      <Cell 
-                        key={`cell-${index}`} 
-                        fill={PRIMARY_COLORS[index % PRIMARY_COLORS.length]} 
-                        className="hover:opacity-70 transition-opacity stroke-white dark:stroke-gray-900" 
-                        strokeWidth={2}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: '#ffffff',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      color: '#1f2937',
-                      fontSize: '12px'
-                    }}
-                  />
-                  <Legend 
-                    verticalAlign="bottom" 
-                    height={40} 
-                    iconSize={10}
-                    wrapperStyle={{
-                      fontSize: '11px',
-                      color: '#4b5563'
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
+          <section className="category-list">
+            <h3>Places by category</h3>
+            {metrics.topAmenities.map(({ key, name, value }) => (
+              <button key={key} onClick={() => onCategoryClick(key)} aria-label={`Filter by ${name}, ${value} places`}>
+                <span>{name}</span><strong>{value}</strong>
+                <span className="category-track" aria-hidden="true">
+                  <span style={{ width: (100 * value / metrics.total) + '%' }} />
+                </span>
+              </button>
+            ))}
+          </section>
         )}
 
         {/* SUBCATEGORIES - EXPANDABLE TABLE */}
         {!activeFilter && metrics.topSubcategories.length > 0 && (
-          <div className="border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800/50">
+          <div className="border border-mineral-300 dark:border-mineral-700 rounded-lg bg-mineral-50 dark:bg-mineral-800/50">
             <button
               onClick={() => setShowSubcategories(!showSubcategories)}
-              className="w-full p-4 flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700/50 transition rounded-t-lg"
+              className="w-full p-4 flex items-center justify-between hover:bg-mineral-100 dark:hover:bg-mineral-700/50 transition rounded-t-lg"
             >
               <div className="text-left">
-                <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                <h3 className="text-sm font-bold text-mineral-900 dark:text-mineral-100">
                   Subcategories ({metrics.topSubcategories.length})
                 </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                <p className="text-xs text-mineral-500 dark:text-mineral-400 mt-0.5">
                   Detailed breakdown by type
                 </p>
               </div>
               {showSubcategories ? 
-                <ChevronUp size={18} className="text-gray-600 dark:text-gray-400" /> : 
-                <ChevronDown size={18} className="text-gray-600 dark:text-gray-400" />
+                <ChevronUp size={18} className="text-mineral-600 dark:text-mineral-400" /> :
+                <ChevronDown size={18} className="text-mineral-600 dark:text-mineral-400" />
               }
             </button>
 
             {showSubcategories && (
-              <div className="border-t border-gray-300 dark:border-gray-600">
+              <div className="border-t border-mineral-300 dark:border-mineral-600">
                 {/* Add hint text */}
-                <div className="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border-b border-gray-300 dark:border-gray-600">
-                  <p className="text-xs text-blue-700 dark:text-blue-400 italic">
-                    💡 Click any row to filter map results
+                <div className="px-4 py-2 bg-forest-50 dark:bg-forest-900/20 border-b border-mineral-300 dark:border-mineral-600">
+                  <p className="text-xs text-forest-700 dark:text-forest-400 italic">
+                    Click any row to filter map results
                   </p>
                 </div>
                 
                 <div className="max-h-80 overflow-y-auto">
                   <table className="w-full text-xs">
-                    <thead className="bg-gray-200 dark:bg-gray-700 sticky top-0">
-                      <tr className="border-b border-gray-300 dark:border-gray-600">
-                        <th className="text-left p-2 font-semibold text-gray-700 dark:text-gray-300">Type</th>
-                        <th className="text-left p-2 font-semibold text-gray-700 dark:text-gray-300">Category</th>
-                        <th className="text-right p-2 font-semibold text-gray-700 dark:text-gray-300">Count</th>
-                        <th className="text-right p-2 font-semibold text-gray-700 dark:text-gray-300">%</th>
+                    <thead className="bg-mineral-200 dark:bg-mineral-700 sticky top-0">
+                      <tr className="border-b border-mineral-300 dark:border-mineral-600">
+                        <th className="text-left p-2 font-semibold text-mineral-700 dark:text-mineral-300">Type</th>
+                        <th className="text-left p-2 font-semibold text-mineral-700 dark:text-mineral-300">Category</th>
+                        <th className="text-right p-2 font-semibold text-mineral-700 dark:text-mineral-300">Count</th>
+                        <th className="text-right p-2 font-semibold text-mineral-700 dark:text-mineral-300">%</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -303,18 +249,18 @@ const AnalyticsPanel = ({
                         <tr
                           key={idx}
                           onClick={() => onCategoryClick(sub.name)}
-                          className="border-b border-gray-200 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer transition"
+                          className="border-b border-mineral-200 dark:border-mineral-700 hover:bg-forest-50 dark:hover:bg-mineral-700 cursor-pointer transition"
                         >
-                          <td className="p-2 text-gray-600 dark:text-gray-400">
+                          <td className="p-2 text-mineral-600 dark:text-mineral-400">
                             {sub.type}
                           </td>
-                          <td className="p-2 text-gray-900 dark:text-gray-100 font-medium capitalize">
+                          <td className="p-2 text-mineral-900 dark:text-mineral-100 font-medium capitalize">
                             {sub.name}
                           </td>
-                          <td className="p-2 text-right text-gray-900 dark:text-gray-100 font-mono">
+                          <td className="p-2 text-right text-mineral-900 dark:text-mineral-100 tabular-nums">
                             {sub.value}
                           </td>
-                          <td className="p-2 text-right text-gray-600 dark:text-gray-400 font-mono">
+                          <td className="p-2 text-right text-mineral-600 dark:text-mineral-400 tabular-nums">
                             {((sub.value / metrics.total) * 100).toFixed(1)}%
                           </td>
                         </tr>
@@ -328,42 +274,42 @@ const AnalyticsPanel = ({
         )}
 
         {/* DETAILED METRICS GRID */}
-        <div className="border border-gray-300 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50">
-          <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-3 pb-2 border-b border-gray-300 dark:border-gray-600">
+        <div className="border border-mineral-300 dark:border-mineral-700 rounded-lg p-4 bg-mineral-50 dark:bg-mineral-800/50">
+          <h3 className="text-sm font-bold text-mineral-900 dark:text-mineral-100 mb-3 pb-2 border-b border-mineral-300 dark:border-mineral-600">
             Statistical Metrics
           </h3>
           <div className="space-y-3">
             
             {/* Density */}
             <div className="flex justify-between items-baseline">
-              <span className="text-xs text-gray-600 dark:text-gray-400">Density (points/km²)</span>
-              <span className="text-sm font-mono font-bold text-gray-900 dark:text-gray-100">{metrics.density}</span>
+              <span className="text-xs text-mineral-600 dark:text-mineral-400">Density (points/km²)</span>
+              <span className="text-sm tabular-nums font-bold text-mineral-900 dark:text-mineral-100">{metrics.density}</span>
             </div>
             
             {/* Diversity Index */}
             <div className="flex justify-between items-baseline">
-              <span className="text-xs text-gray-600 dark:text-gray-400">Shannon Diversity Index</span>
-              <span className="text-sm font-mono font-bold text-gray-900 dark:text-gray-100">{metrics.diversityIndex}</span>
+              <span className="text-xs text-mineral-600 dark:text-mineral-400">Shannon Diversity Index</span>
+              <span className="text-sm tabular-nums font-bold text-mineral-900 dark:text-mineral-100">{metrics.diversityIndex}</span>
             </div>
             
             {/* Spatial Pattern */}
             <div className="flex justify-between items-baseline">
-              <span className="text-xs text-gray-600 dark:text-gray-400">Spatial Pattern (NNI)</span>
+              <span className="text-xs text-mineral-600 dark:text-mineral-400">Spatial Pattern (NNI)</span>
               <div className="text-right">
-                <span className="text-sm font-bold text-gray-900 dark:text-gray-100">{metrics.pattern}</span>
-                <span className="text-xs text-gray-500 dark:text-gray-400 ml-2 font-mono">({metrics.spatialPattern})</span>
+                <span className="text-sm font-bold text-mineral-900 dark:text-mineral-100">{metrics.pattern}</span>
+                <span className="text-xs text-mineral-500 dark:text-mineral-400 ml-2 tabular-nums">({metrics.spatialPattern})</span>
               </div>
             </div>
             
             {/* Walkability */}
-            <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+            <div className="pt-2 border-t border-mineral-200 dark:border-mineral-700">
               <div className="flex justify-between items-baseline mb-1">
-                <span className="text-xs text-gray-600 dark:text-gray-400">Walkability Score</span>
-                <span className="text-sm font-bold text-gray-900 dark:text-gray-100">{metrics.walkabilityScore}/100</span>
+                <span className="text-xs text-mineral-600 dark:text-mineral-400">Walkability Score</span>
+                <span className="text-sm font-bold text-mineral-900 dark:text-mineral-100">{metrics.walkabilityScore}/100</span>
               </div>
-              <div className="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-2">
+              <div className="w-full bg-mineral-300 dark:bg-mineral-700 rounded-full h-2">
                 <div 
-                  className="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-500"
+                  className="bg-forest-600 dark:bg-forest-500 h-2 rounded-full transition-all duration-500"
                   style={{ width: `${metrics.walkabilityScore}%` }}
                 />
               </div>
@@ -373,8 +319,8 @@ const AnalyticsPanel = ({
         </div>
 
         {/* BUSINESS CHARACTERISTICS */}
-        <div className="border border-gray-300 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50">
-          <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-3 pb-2 border-b border-gray-300 dark:border-gray-600">
+        <div className="border border-mineral-300 dark:border-mineral-700 rounded-lg p-4 bg-mineral-50 dark:bg-mineral-800/50">
+          <h3 className="text-sm font-bold text-mineral-900 dark:text-mineral-100 mb-3 pb-2 border-b border-mineral-300 dark:border-mineral-600">
             Business Characteristics
           </h3>
           <div className="space-y-3">
@@ -382,12 +328,12 @@ const AnalyticsPanel = ({
             {/* Chain vs Independent */}
             <div>
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-gray-600 dark:text-gray-400">Chain Businesses</span>
-                <span className="font-mono text-gray-900 dark:text-gray-100">{metrics.chainPct}%</span>
+                <span className="text-mineral-600 dark:text-mineral-400">Chain Businesses</span>
+                <span className="tabular-nums text-mineral-900 dark:text-mineral-100">{metrics.chainPct}%</span>
               </div>
-              <div className="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-1.5">
+              <div className="w-full bg-mineral-300 dark:bg-mineral-700 rounded-full h-1.5">
                 <div 
-                  className="bg-gray-600 dark:bg-gray-500 h-1.5 rounded-full"
+                  className="bg-mineral-600 dark:bg-mineral-500 h-1.5 rounded-full"
                   style={{ width: `${metrics.chainPct}%` }}
                 />
               </div>
@@ -395,12 +341,12 @@ const AnalyticsPanel = ({
             
             <div>
               <div className="flex justify-between text-xs mb-1">
-                <span className="text-gray-600 dark:text-gray-400">Independent</span>
-                <span className="font-mono text-gray-900 dark:text-gray-100">{metrics.independentPct}%</span>
+                <span className="text-mineral-600 dark:text-mineral-400">Independent</span>
+                <span className="tabular-nums text-mineral-900 dark:text-mineral-100">{metrics.independentPct}%</span>
               </div>
-              <div className="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-1.5">
+              <div className="w-full bg-mineral-300 dark:bg-mineral-700 rounded-full h-1.5">
                 <div 
-                  className="bg-blue-600 dark:bg-blue-500 h-1.5 rounded-full"
+                  className="bg-forest-600 dark:bg-forest-500 h-1.5 rounded-full"
                   style={{ width: `${metrics.independentPct}%` }}
                 />
               </div>
@@ -408,14 +354,14 @@ const AnalyticsPanel = ({
             
             {/* Accessibility */}
             {metrics.accessibilityPct > 0 && (
-              <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+              <div className="pt-2 border-t border-mineral-200 dark:border-mineral-700">
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-gray-600 dark:text-gray-400">Wheelchair Accessible</span>
-                  <span className="font-mono text-gray-900 dark:text-gray-100">{metrics.accessibilityPct}%</span>
+                  <span className="text-mineral-600 dark:text-mineral-400">Wheelchair Accessible</span>
+                  <span className="tabular-nums text-mineral-900 dark:text-mineral-100">{metrics.accessibilityPct}%</span>
                 </div>
-                <div className="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-1.5">
+                <div className="w-full bg-mineral-300 dark:bg-mineral-700 rounded-full h-1.5">
                   <div 
-                    className="bg-gray-700 dark:bg-gray-400 h-1.5 rounded-full"
+                    className="bg-mineral-700 dark:bg-mineral-400 h-1.5 rounded-full"
                     style={{ width: `${metrics.accessibilityPct}%` }}
                   />
                 </div>
@@ -424,10 +370,10 @@ const AnalyticsPanel = ({
             
             {/* Cuisine Count */}
             {metrics.cuisineCount > 0 && (
-              <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+              <div className="pt-2 border-t border-mineral-200 dark:border-mineral-700">
                 <div className="flex justify-between items-baseline">
-                  <span className="text-xs text-gray-600 dark:text-gray-400">Cuisine Varieties</span>
-                  <span className="text-sm font-bold text-gray-900 dark:text-gray-100">{metrics.cuisineCount}</span>
+                  <span className="text-xs text-mineral-600 dark:text-mineral-400">Cuisine Varieties</span>
+                  <span className="text-sm font-bold text-mineral-900 dark:text-mineral-100">{metrics.cuisineCount}</span>
                 </div>
               </div>
             )}
@@ -436,8 +382,8 @@ const AnalyticsPanel = ({
         </div>
 
         {/* TOP LOCATIONS */}
-        <div className="border border-gray-300 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50">
-          <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100 mb-3 pb-2 border-b border-gray-300 dark:border-gray-600">
+        <div className="border border-mineral-300 dark:border-mineral-700 rounded-lg p-4 bg-mineral-50 dark:bg-mineral-800/50">
+          <h3 className="text-sm font-bold text-mineral-900 dark:text-mineral-100 mb-3 pb-2 border-b border-mineral-300 dark:border-mineral-600">
             Most Frequent Locations
           </h3>
           <div className="h-48">
@@ -448,20 +394,20 @@ const AnalyticsPanel = ({
                   dataKey="name" 
                   type="category" 
                   width={85} 
-                  tick={{ fontSize: 10, fill: '#6b7280' }} 
+                  tick={{ fontSize: 10, fill: 'var(--quiet)' }}
                 />
                 <Tooltip 
                   cursor={{ fill: 'rgba(59, 130, 246, 0.1)' }} 
                   contentStyle={{ 
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #d1d5db',
+                    backgroundColor: 'var(--paper)',
+                    border: '1px solid var(--edge)',
                     borderRadius: '4px',
                     fontSize: '11px'
                   }} 
                 />
                 <Bar dataKey="count" radius={[0, 3, 3, 0]} barSize={16}>
                   {metrics.topLocations.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill="#1e3a8a" />
+                    <Cell key={`cell-${index}`} fill="#2c6451" />
                   ))}
                 </Bar>
               </BarChart>

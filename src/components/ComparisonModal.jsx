@@ -1,7 +1,8 @@
+import WorkspaceDialog from './WorkspaceDialog';
 import React, { useState, useEffect, useMemo } from 'react'; // Fixed: useEffec -> useEffect
 import { 
   X, TrendingUp, MapPin, Layers, Activity, Download, 
-  Database, BarChart3, Terminal
+  Database, BarChart3
 } from 'lucide-react';
 import { searchCity, fetchAmenities } from '../api/osmService';
 import {
@@ -18,19 +19,12 @@ import {
 import { 
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
-import L from 'leaflet';
+
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import { generateComparativeInsights, calculateSimilarityScore } from '../utlis/generateInsights';
 import { MAP_TILE_ATTRIBUTION, MAP_TILE_URL } from '../config/mapTiles';
 
-// Leaflet icon fix
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
-
+import { iconForPlace, locationIcon } from '../config/cartography';
 import { DATA_LAYERS, placeCategory } from '../config/mapLayers';
 
 const ComparisonModal = ({ isOpen, onClose }) => {
@@ -124,121 +118,93 @@ const ComparisonModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-4 overflow-y-auto">
-      <div className="bg-white dark:bg-gray-900 w-full max-w-[98vw] max-h-[95vh] overflow-y-auto border border-gray-300 dark:border-gray-700 shadow-lg rounded-lg">
+    <WorkspaceDialog label="Compare cities" size="report" onClose={onClose}>
+      <div className="bg-white dark:bg-mineral-900 w-full max-w-[98vw] max-h-[95vh] overflow-y-auto border border-mineral-300 dark:border-mineral-700 shadow-lg rounded-lg">
         
-        {/* Header */}
-        <div className="bg-blue-900 p-6 border-b border-blue-800 rounded-t-lg">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-blue-800 border border-blue-700 rounded-md">
-                <Terminal size={24} className="text-blue-100" />
-              </div>
+        <header className="dialog-heading">
+          <h2>Compare cities</h2>
+          <button aria-label="Close" onClick={onClose}><X size={20} /></button>
+        </header>
+        <div className="compare-config">
+          <div>
+            <div className="compare-fields">
               <div>
-                <h1 className="text-xl font-bold text-white">
-                  Urban Infrastructure Comparison
-                </h1>
-                <p className="text-blue-200 text-sm mt-1">
-                  Comparative Analysis System
-                </p>
-              </div>
-            </div>
-            <button 
-              aria-label="Close" onClick={onClose}
-              className="text-blue-300 hover:text-white p-2 border border-blue-700 hover:bg-blue-800 transition-colors rounded-md"
-            >
-              <X size={20} />
-            </button>
-          </div>
-        </div>
-
-        {/* Configuration Panel */}
-        <div className="p-6 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-          
-          <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 mb-6 rounded-md">
-            <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
-              Analysis Configuration
-            </h2>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="compare-a" className="block text-sm font-bold text-mineral-700 dark:text-mineral-300 mb-2">
                   City A
                 </label>
-                <input
+                <input id="compare-a"
                   type="text"
                   placeholder="e.g., San Francisco, CA"
                   value={city1Name}
                   onChange={(e) => setCity1Name(e.target.value)}
-                  className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-blue-600 outline-none rounded-md"
+                  className="w-full p-3 border border-mineral-300 dark:border-mineral-600 bg-white dark:bg-mineral-800 text-mineral-900 dark:text-white focus:border-forest-600 outline-none rounded-md"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="compare-b" className="block text-sm font-bold text-mineral-700 dark:text-mineral-300 mb-2">
                   City B
                 </label>
-                <input
+                <input id="compare-b"
                   type="text"
                   placeholder="e.g., New York, NY"
                   value={city2Name}
                   onChange={(e) => setCity2Name(e.target.value)}
-                  className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-blue-600 outline-none rounded-md"
+                  className="w-full p-3 border border-mineral-300 dark:border-mineral-600 bg-white dark:bg-mineral-800 text-mineral-900 dark:text-white focus:border-forest-600 outline-none rounded-md"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
+                <label htmlFor="compare-radius" className="block text-sm font-bold text-mineral-700 dark:text-mineral-300 mb-2">
                   Radius: {(radius / 1000).toFixed(1)} km
                 </label>
-                <input
+                <input id="compare-radius"
                   type="range"
                   min="1000"
                   max="15000"
                   step="500"
                   value={radius}
                   onChange={(e) => setRadius(Number(e.target.value))}
-                  className="w-full h-2 bg-blue-200 dark:bg-blue-800 appearance-none cursor-pointer rounded-sm"
+                  className="w-full h-2 bg-forest-200 dark:bg-forest-800 appearance-none cursor-pointer rounded-sm"
                 />
-                <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                <div className="text-xs text-mineral-600 dark:text-mineral-400 mt-1">
                   Area: {calculateCircleArea(radius).toFixed(1)} km²
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
-                  Run Analysis
-                </label>
+
                 <button
                   onClick={handleCompare}
                   disabled={loading || !city1Name.trim() || !city2Name.trim()}
-                  className="w-full h-[52px] bg-blue-900 text-white font-bold hover:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-blue-800 rounded-md"
+                  className="w-full h-[52px] bg-forest-900 text-white font-bold hover:bg-forest-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-forest-800 rounded-md"
                 >
                   {loading ? (
                     <div className="flex items-center justify-center gap-2">
                       <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
-                      Processing...
+                      Comparing…
                     </div>
                   ) : (
-                    'ANALYZE'
+                    'Compare cities'
                   )}
                 </button>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">
-                Select Amenity Types ({selectedAmenities.length} selected)
+              <label className="block text-sm font-bold text-mineral-700 dark:text-mineral-300 mb-3">
+                Map layers ({selectedAmenities.length} selected)
               </label>
-              <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+              <div className="layer-options">
                 {DATA_LAYERS.map((amenity) => (
                   <button
                     key={amenity}
+                    aria-pressed={selectedAmenities.includes(amenity)}
                     onClick={() => toggleAmenity(amenity)}
                     className={`p-2 border text-xs font-medium transition-colors rounded-md ${
                       selectedAmenities.includes(amenity)
-                        ? 'border-blue-600 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
-                        : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:border-gray-400'
+                        ? 'border-forest-600 bg-forest-100 dark:bg-forest-900 text-forest-800 dark:text-forest-200'
+                        : 'border-mineral-200 dark:border-mineral-700 bg-white dark:bg-mineral-800 text-mineral-700 dark:text-mineral-300 hover:border-mineral-400'
                     }`}
                   >
                     {amenity.replace(/_/g, ' ')}
@@ -268,78 +234,61 @@ const ComparisonModal = ({ isOpen, onClose }) => {
           <div className="p-6 space-y-8">
             
             {/* Summary */}
-            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-md">
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
-                Analysis Summary: {comparisonData.amenities.join(', ')}
+            <div className="bg-white dark:bg-mineral-900 border border-mineral-200 dark:border-mineral-700 p-6 rounded-md">
+              <h2 className="text-xl font-bold text-mineral-800 dark:text-white mb-4 border-b border-mineral-200 dark:border-mineral-700 pb-2">
+                Comparison results · {comparisonData.amenities.join(', ')}
               </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-gray-50 dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-700 rounded-md">
-                  <div className="text-sm text-gray-600 dark:text-gray-400 font-bold">Study Area</div>
-                  <div className="text-2xl font-bold text-blue-900 dark:text-blue-400">{comparisonData.comparison.area} km²</div>
+                <div className="bg-mineral-50 dark:bg-mineral-800 p-4 border border-mineral-200 dark:border-mineral-700 rounded-md">
+                  <div className="text-sm text-mineral-600 dark:text-mineral-400 font-bold">Study Area</div>
+                  <div className="text-2xl font-bold text-forest-900 dark:text-forest-400">{comparisonData.comparison.area} km²</div>
                 </div>
-                <div className="bg-gray-50 dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-700 rounded-md">
-                  <div className="text-sm text-gray-600 dark:text-gray-400 font-bold">Total Features</div>
-                  <div className="text-2xl font-bold text-blue-900 dark:text-blue-400">{comparisonData.metadata.dataPoints.toLocaleString()}</div>
+                <div className="bg-mineral-50 dark:bg-mineral-800 p-4 border border-mineral-200 dark:border-mineral-700 rounded-md">
+                  <div className="text-sm text-mineral-600 dark:text-mineral-400 font-bold">Total Features</div>
+                  <div className="text-2xl font-bold text-forest-900 dark:text-forest-400">{comparisonData.metadata.dataPoints.toLocaleString()}</div>
                 </div>
-                <div className="bg-gray-50 dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-700 rounded-md">
-                  <div className="text-sm text-gray-600 dark:text-gray-400 font-bold">Density Difference</div>
-                  <div className="text-2xl font-bold text-blue-900 dark:text-blue-400">{Math.abs(comparisonData.comparison.densityDifference)}%</div>
+                <div className="bg-mineral-50 dark:bg-mineral-800 p-4 border border-mineral-200 dark:border-mineral-700 rounded-md">
+                  <div className="text-sm text-mineral-600 dark:text-mineral-400 font-bold">Density Difference</div>
+                  <div className="text-2xl font-bold text-forest-900 dark:text-forest-400">{Math.abs(comparisonData.comparison.densityDifference)}%</div>
                 </div>
-                <div className="bg-gray-50 dark:bg-gray-800 p-4 border border-gray-200 dark:border-gray-700 rounded-md">
-                  <div className="text-sm text-gray-600 dark:text-gray-400 font-bold">Analysis Date</div>
-                  <div className="text-lg font-bold text-blue-900 dark:text-blue-400">{comparisonData.metadata.analysisDate}</div>
+                <div className="bg-mineral-50 dark:bg-mineral-800 p-4 border border-mineral-200 dark:border-mineral-700 rounded-md">
+                  <div className="text-sm text-mineral-600 dark:text-mineral-400 font-bold">Analysis Date</div>
+                  <div className="text-lg font-bold text-forest-900 dark:text-forest-400">{comparisonData.metadata.analysisDate}</div>
                 </div>
               </div>
             </div>
 
             {/* KEY INSIGHTS - Updated colors */}
-              <div className="bg-blue-50 dark:bg-blue-950 border-2 border-blue-300 dark:border-blue-700 p-6 rounded-lg shadow-lg">
+              <div className="bg-forest-50 dark:bg-forest-950 border border-forest-300 dark:border-forest-700 p-5 rounded-lg">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-blue-900 dark:text-blue-100">
-                    🔍 Key Insights
+                  <h2 className="text-2xl font-bold text-forest-900 dark:text-forest-100">
+                    Key Insights
                   </h2>
                   <div className="text-right">
-                    <div className="text-sm text-blue-600 dark:text-blue-400 font-bold">Similarity Score</div>
-                    <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                    <div className="text-sm text-forest-600 dark:text-forest-400 font-bold">Similarity Score</div>
+                    <div className="text-3xl font-bold text-forest-600 dark:text-forest-400">
                       {similarityScore.toFixed(0)}%
                     </div>
-                    <div className="text-xs text-blue-500 dark:text-blue-400">
+                    <div className="text-xs text-forest-500 dark:text-forest-400">
                       {similarityScore > 70 ? "Very Similar" : similarityScore > 40 ? "Moderately Different" : "Very Different"}
                     </div>
                   </div>
                 </div>
 
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {insights.map((insight, idx) => (
-                  <div
-                    key={idx}
-                    className={`p-4 rounded-lg border-l-4 ${
-                      insight.importance === 'high'
-                        ? 'bg-white dark:bg-blue-900 border-orange-500'
-                        : 'bg-white dark:bg-blue-900 border-blue-400'
-                    } shadow-sm hover:shadow-md transition-shadow`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="text-2xl flex-shrink-0">{insight.icon}</div>
-                      <p
-                        className="text-sm text-gray-800 dark:text-gray-200"
-                        dangerouslySetInnerHTML={{ __html: insight.text }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <ul className="comparison-notes">
+                {insights.map((insight, idx) => <li key={idx}>{insight.text}</li>)}
+              </ul>
 
               {/* Visual Comparison Bar */}
-              <div className="mt-6 p-4 bg-white dark:bg-blue-900 rounded-lg">
-                <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">
+              <div className="mt-6 p-4 bg-white dark:bg-forest-900 rounded-lg">
+                <h3 className="text-sm font-bold text-mineral-700 dark:text-mineral-300 mb-3">
                   Overall Urban Character Comparison
                 </h3>
-                <div className="relative h-8 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div className="relative h-8 bg-mineral-200 dark:bg-mineral-700 rounded-full overflow-hidden">
                   <div
-                    className="absolute left-0 top-0 h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-1000 flex items-center justify-end pr-3"
+                    className="absolute left-0 top-0 h-full bg-forest-700 transition-all duration-1000 flex items-center justify-end pr-3"
                     style={{ width: `${(comparisonData.city1.total / (comparisonData.city1.total + comparisonData.city2.total)) * 100}%` }}
                   >
                     <span className="text-xs font-bold text-white">
@@ -347,7 +296,7 @@ const ComparisonModal = ({ isOpen, onClose }) => {
                     </span>
                   </div>
                   <div
-                    className="absolute right-0 top-0 h-full bg-gradient-to-l from-indigo-500 to-indigo-600 transition-all duration-1000 flex items-center justify-start pl-3"
+                    className="absolute right-0 top-0 h-full bg-[#647657] transition-all duration-1000 flex items-center justify-start pl-3"
                     style={{ width: `${(comparisonData.city2.total / (comparisonData.city1.total + comparisonData.city2.total)) * 100}%` }}
                   >
                     <span className="text-xs font-bold text-white">
@@ -355,7 +304,7 @@ const ComparisonModal = ({ isOpen, onClose }) => {
                     </span>
                   </div>
                 </div>
-                <div className="flex justify-between mt-2 text-xs text-gray-600 dark:text-gray-400">
+                <div className="flex justify-between mt-2 text-xs text-mineral-600 dark:text-mineral-400">
                   <span>{comparisonData.city1.total} amenities</span>
                   <span>{comparisonData.city2.total} amenities</span>
                 </div>
@@ -372,8 +321,8 @@ const ComparisonModal = ({ isOpen, onClose }) => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               
               {/* Density Chart */}
-              <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-md">
-                <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+              <div className="bg-white dark:bg-mineral-900 border border-mineral-200 dark:border-mineral-700 p-6 rounded-md">
+                <h3 className="text-lg font-bold text-mineral-800 dark:text-white mb-4 border-b border-mineral-200 dark:border-mineral-700 pb-2">
                   Density Distribution (features/km²)
                 </h3>
                 <ResponsiveContainer width="100%" height={300}>
@@ -393,8 +342,8 @@ const ComparisonModal = ({ isOpen, onClose }) => {
                     <YAxis tick={{ fontSize: 12 }} />
                     <Tooltip 
                       contentStyle={{ 
-                        backgroundColor: '#f9fafb',
-                        border: '1px solid #d1d5db',
+                        backgroundColor: 'var(--wash)',
+                        border: '1px solid var(--edge)',
                         borderRadius: '6px'
                       }}
                       formatter={(value, name, props) => [
@@ -403,16 +352,16 @@ const ComparisonModal = ({ isOpen, onClose }) => {
                       ]}
                     />
                     <Bar dataKey="density" radius={[4, 4, 0, 0]}>
-                      <Cell fill="#1e3a8a" />
-                      <Cell fill="#3b82f6" />
+                      <Cell fill="#2c6451" />
+                      <Cell fill="#73916a" />
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
 
               {/* Spatial Pattern */}
-              <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-md">
-                <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+              <div className="bg-white dark:bg-mineral-900 border border-mineral-200 dark:border-mineral-700 p-6 rounded-md">
+                <h3 className="text-lg font-bold text-mineral-800 dark:text-white mb-4 border-b border-mineral-200 dark:border-mineral-700 pb-2">
                   Spatial Distribution Pattern
                 </h3>
                 <SpatialPatternDisplay city1={comparisonData.city1} city2={comparisonData.city2} />
@@ -420,16 +369,16 @@ const ComparisonModal = ({ isOpen, onClose }) => {
             </div>
 
             {/* Statistical Table */}
-            <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-md">
-              <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+            <div className="bg-white dark:bg-mineral-900 border border-mineral-200 dark:border-mineral-700 p-6 rounded-md">
+              <h3 className="text-lg font-bold text-mineral-800 dark:text-white mb-4 border-b border-mineral-200 dark:border-mineral-700 pb-2">
                 Statistical Comparison
               </h3>
               <StatisticalTable city1={comparisonData.city1} city2={comparisonData.city2} />
             </div>
 
             {/* Export */}
-            <div className="bg-blue-900 border border-blue-800 p-6 rounded-md">
-              <h3 className="text-lg font-bold text-white mb-4 border-b border-blue-800 pb-2">
+            <div className="bg-mineral-50 dark:bg-mineral-900 p-5 rounded-md">
+              <h3 className="text-lg font-semibold text-mineral-900 dark:text-mineral-100 mb-4 border-b border-mineral-300 pb-2">
                 Export Results
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -463,7 +412,7 @@ const ComparisonModal = ({ isOpen, onClose }) => {
           </div>
         )}
       </div>
-    </div>
+    </WorkspaceDialog>
   );
 };
 
@@ -472,22 +421,22 @@ const CityMapCard = ({ data, label, radius }) => {
   const pattern = interpretSpatialPattern(data.spatialPattern);
   
   return (
-    <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 rounded-md">
+    <div className="bg-mineral-50 dark:bg-mineral-800 border border-mineral-200 dark:border-mineral-700 p-4 rounded-md">
       <div className="flex justify-between items-start mb-4">
         <div>
-          <div className="text-sm text-gray-600 dark:text-gray-400 font-bold uppercase">{label}</div>
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white">{data.name.split(',')[0]}</h3>
-          <div className="text-sm text-gray-600 dark:text-gray-400 font-mono">
+          <div className="text-sm text-mineral-600 dark:text-mineral-400 font-bold">{label}</div>
+          <h3 className="text-lg font-bold text-mineral-900 dark:text-white">{data.name.split(',')[0]}</h3>
+          <div className="text-sm text-mineral-600 dark:text-mineral-400 tabular-nums">
             {data.coordinates[0].toFixed(4)}, {data.coordinates[1].toFixed(4)}
           </div>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-bold text-blue-900 dark:text-blue-400">{data.total}</div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">features</div>
+          <div className="text-2xl font-bold text-forest-900 dark:text-forest-400">{data.total}</div>
+          <div className="text-sm text-mineral-600 dark:text-mineral-400">features</div>
         </div>
       </div>
       
-      <div className="mb-4 h-64 border border-gray-300 dark:border-gray-600 rounded-md overflow-hidden relative">
+      <div className="mb-4 h-64 border border-mineral-300 dark:border-mineral-600 rounded-md overflow-hidden relative">
         <SimpleMap 
           center={data.coordinates} 
           data={data.data} 
@@ -498,20 +447,20 @@ const CityMapCard = ({ data, label, radius }) => {
       
       <div className="grid grid-cols-2 gap-4 text-sm">
         <div>
-          <div className="text-gray-600 dark:text-gray-400 font-bold">Density</div>
-          <div className="font-mono text-blue-900 dark:text-blue-400 font-bold">{data.density.toFixed(2)} pts/km²</div>
+          <div className="text-mineral-600 dark:text-mineral-400 font-bold">Density</div>
+          <div className="tabular-nums text-forest-900 dark:text-forest-400 font-bold">{data.density.toFixed(2)} pts/km²</div>
         </div>
         <div>
-          <div className="text-gray-600 dark:text-gray-400 font-bold">Diversity</div>
-          <div className="font-mono text-blue-900 dark:text-blue-400 font-bold">{data.diversityIndex.toFixed(3)}</div>
+          <div className="text-mineral-600 dark:text-mineral-400 font-bold">Diversity</div>
+          <div className="tabular-nums text-forest-900 dark:text-forest-400 font-bold">{data.diversityIndex.toFixed(3)}</div>
         </div>
         <div>
-          <div className="text-gray-600 dark:text-gray-400 font-bold">Pattern</div>
-          <div className="text-gray-900 dark:text-white font-bold">{pattern.pattern}</div>
+          <div className="text-mineral-600 dark:text-mineral-400 font-bold">Pattern</div>
+          <div className="text-mineral-900 dark:text-white font-bold">{pattern.pattern}</div>
         </div>
         <div>
-          <div className="text-gray-600 dark:text-gray-400 font-bold">NNI</div>
-          <div className="font-mono text-blue-900 dark:text-blue-400 font-bold">{data.spatialPattern.toFixed(3)}</div>
+          <div className="text-mineral-600 dark:text-mineral-400 font-bold">NNI</div>
+          <div className="tabular-nums text-forest-900 dark:text-forest-400 font-bold">{data.spatialPattern.toFixed(3)}</div>
         </div>
       </div>
     </div>
@@ -536,19 +485,19 @@ const SimpleMap = ({ center, data, radius, cityName }) => {
         center={center}
         radius={radius}
         pathOptions={{
-          color: '#1e3a8a',
-          fillColor: '#3b82f6',
+          color: '#2c6451',
+          fillColor: '#73916a',
           fillOpacity: 0.1,
           weight: 2,
           dashArray: '5, 5',
         }}
       />
       
-      <Marker position={center}>
+      <Marker icon={locationIcon} position={center}>
         <Popup>
           <div style={{ fontSize: '12px' }}>
             <div style={{ fontWeight: 'bold' }}>{cityName} Center</div>
-            <div style={{ color: '#666' }}>
+            <div style={{ color: 'var(--quiet)' }}>
               {center[0].toFixed(4)}, {center[1].toFixed(4)}
             </div>
           </div>
@@ -562,7 +511,7 @@ const SimpleMap = ({ center, data, radius, cityName }) => {
         if (!lat || !lon || isNaN(lat) || isNaN(lon)) return null;
         
         return (
-          <Marker
+          <Marker icon={iconForPlace(item.tags)}
             key={`${item.id || index}`}
             position={[parseFloat(lat), parseFloat(lon)]}
           >
@@ -571,11 +520,11 @@ const SimpleMap = ({ center, data, radius, cityName }) => {
                 <div style={{ fontWeight: 'bold' }}>
                   {item.tags?.name || 'Unnamed'}
                 </div>
-                <div style={{ color: '#666' }}>
+                <div style={{ color: 'var(--quiet)' }}>
                   {placeCategory(item.tags)}
                 </div>
                 {item.tags?.cuisine && (
-                  <div style={{ color: '#999' }}>
+                  <div style={{ color: 'var(--quiet)' }}>
                     Cuisine: {item.tags.cuisine}
                   </div>
                 )}
@@ -594,39 +543,39 @@ const SpatialPatternDisplay = ({ city1, city2 }) => {
 
   return (
     <div className="space-y-4">
-      <div className="bg-blue-50 dark:bg-blue-900/20 p-3 border border-blue-200 dark:border-blue-800 rounded-md">
-        <div className="text-sm text-blue-800 dark:text-blue-200 mb-2">
+      <div className="bg-forest-50 dark:bg-forest-900/20 p-3 border border-forest-200 dark:border-forest-800 rounded-md">
+        <div className="text-sm text-forest-800 dark:text-forest-200 mb-2">
           <strong>Nearest Neighbor Index (NNI):</strong> Measures spatial clustering
         </div>
-        <div className="text-xs text-blue-700 dark:text-blue-300">
+        <div className="text-xs text-forest-700 dark:text-forest-300">
           &lt;0.8 = Clustered • ~1.0 = Random • &gt;1.2 = Dispersed
         </div>
       </div>
       
       <div className="grid grid-cols-2 gap-4">
-        <div className="border border-blue-200 dark:border-blue-700 p-4 rounded-md">
-          <div className="font-bold text-gray-900 dark:text-white mb-2">{city1.name.split(',')[0]}</div>
+        <div className="border border-forest-200 dark:border-forest-700 p-4 rounded-md">
+          <div className="font-bold text-mineral-900 dark:text-white mb-2">{city1.name.split(',')[0]}</div>
           <div className="text-sm space-y-1">
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">Pattern:</span>
-              <span className="font-mono text-blue-900 dark:text-blue-400 font-bold">{pattern1.pattern}</span>
+              <span className="text-mineral-600 dark:text-mineral-400">Pattern:</span>
+              <span className="tabular-nums text-forest-900 dark:text-forest-400 font-bold">{pattern1.pattern}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">NNI:</span>
-              <span className="font-mono text-gray-900 dark:text-white font-bold">{city1.spatialPattern.toFixed(4)}</span>
+              <span className="text-mineral-600 dark:text-mineral-400">NNI:</span>
+              <span className="tabular-nums text-mineral-900 dark:text-white font-bold">{city1.spatialPattern.toFixed(4)}</span>
             </div>
           </div>
         </div>
-        <div className="border border-blue-200 dark:border-blue-700 p-4 rounded-md">
-          <div className="font-bold text-gray-900 dark:text-white mb-2">{city2.name.split(',')[0]}</div>
+        <div className="border border-forest-200 dark:border-forest-700 p-4 rounded-md">
+          <div className="font-bold text-mineral-900 dark:text-white mb-2">{city2.name.split(',')[0]}</div>
           <div className="text-sm space-y-1">
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">Pattern:</span>
-              <span className="font-mono text-blue-900 dark:text-blue-400 font-bold">{pattern2.pattern}</span>
+              <span className="text-mineral-600 dark:text-mineral-400">Pattern:</span>
+              <span className="tabular-nums text-forest-900 dark:text-forest-400 font-bold">{pattern2.pattern}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">NNI:</span>
-              <span className="font-mono text-gray-900 dark:text-white font-bold">{city2.spatialPattern.toFixed(4)}</span>
+              <span className="text-mineral-600 dark:text-mineral-400">NNI:</span>
+              <span className="tabular-nums text-mineral-900 dark:text-white font-bold">{city2.spatialPattern.toFixed(4)}</span>
             </div>
           </div>
         </div>
@@ -638,9 +587,9 @@ const SpatialPatternDisplay = ({ city1, city2 }) => {
 const StatisticalTable = ({ city1, city2 }) => {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full border border-gray-200 dark:border-gray-700">
+      <table className="w-full border border-mineral-200 dark:border-mineral-700">
         <thead>
-          <tr className="bg-blue-900 text-white border-b border-blue-800">
+          <tr className="bg-forest-900 text-white border-b border-forest-800">
             <th className="p-3 text-left text-sm font-bold">Metric</th>
             <th className="p-3 text-center text-sm font-bold">{city1.name.split(',')[0]}</th>
             <th className="p-3 text-center text-sm font-bold">{city2.name.split(',')[0]}</th>
@@ -648,29 +597,29 @@ const StatisticalTable = ({ city1, city2 }) => {
           </tr>
         </thead>
         <tbody>
-          <tr className="border-b border-gray-200 dark:border-gray-700">
-            <td className="p-3 text-sm font-medium text-gray-700 dark:text-gray-300">Total Features</td>
-            <td className="p-3 text-center text-sm font-mono text-blue-900 dark:text-blue-400 font-bold">{city1.total}</td>
-            <td className="p-3 text-center text-sm font-mono text-blue-900 dark:text-blue-400 font-bold">{city2.total}</td>
-            <td className="p-3 text-center text-sm font-mono font-bold text-gray-900 dark:text-white">{city1.total - city2.total}</td>
+          <tr className="border-b border-mineral-200 dark:border-mineral-700">
+            <td className="p-3 text-sm font-medium text-mineral-700 dark:text-mineral-300">Total Features</td>
+            <td className="p-3 text-center text-sm tabular-nums text-forest-900 dark:text-forest-400 font-bold">{city1.total}</td>
+            <td className="p-3 text-center text-sm tabular-nums text-forest-900 dark:text-forest-400 font-bold">{city2.total}</td>
+            <td className="p-3 text-center text-sm tabular-nums font-bold text-mineral-900 dark:text-white">{city1.total - city2.total}</td>
           </tr>
-          <tr className="border-b border-gray-200 dark:border-gray-700">
-            <td className="p-3 text-sm font-medium text-gray-700 dark:text-gray-300">Density (pts/km²)</td>
-            <td className="p-3 text-center text-sm font-mono text-blue-900 dark:text-blue-400 font-bold">{city1.density.toFixed(2)}</td>
-            <td className="p-3 text-center text-sm font-mono text-blue-900 dark:text-blue-400 font-bold">{city2.density.toFixed(2)}</td>
-            <td className="p-3 text-center text-sm font-mono font-bold text-gray-900 dark:text-white">{(city1.density - city2.density).toFixed(2)}</td>
+          <tr className="border-b border-mineral-200 dark:border-mineral-700">
+            <td className="p-3 text-sm font-medium text-mineral-700 dark:text-mineral-300">Density (pts/km²)</td>
+            <td className="p-3 text-center text-sm tabular-nums text-forest-900 dark:text-forest-400 font-bold">{city1.density.toFixed(2)}</td>
+            <td className="p-3 text-center text-sm tabular-nums text-forest-900 dark:text-forest-400 font-bold">{city2.density.toFixed(2)}</td>
+            <td className="p-3 text-center text-sm tabular-nums font-bold text-mineral-900 dark:text-white">{(city1.density - city2.density).toFixed(2)}</td>
           </tr>
-          <tr className="border-b border-gray-200 dark:border-gray-700">
-            <td className="p-3 text-sm font-medium text-gray-700 dark:text-gray-300">Shannon Diversity</td>
-            <td className="p-3 text-center text-sm font-mono text-blue-900 dark:text-blue-400 font-bold">{city1.diversityIndex.toFixed(3)}</td>
-            <td className="p-3 text-center text-sm font-mono text-blue-900 dark:text-blue-400 font-bold">{city2.diversityIndex.toFixed(3)}</td>
-            <td className="p-3 text-center text-sm font-mono font-bold text-gray-900 dark:text-white">{(city1.diversityIndex - city2.diversityIndex).toFixed(3)}</td>
+          <tr className="border-b border-mineral-200 dark:border-mineral-700">
+            <td className="p-3 text-sm font-medium text-mineral-700 dark:text-mineral-300">Shannon Diversity</td>
+            <td className="p-3 text-center text-sm tabular-nums text-forest-900 dark:text-forest-400 font-bold">{city1.diversityIndex.toFixed(3)}</td>
+            <td className="p-3 text-center text-sm tabular-nums text-forest-900 dark:text-forest-400 font-bold">{city2.diversityIndex.toFixed(3)}</td>
+            <td className="p-3 text-center text-sm tabular-nums font-bold text-mineral-900 dark:text-white">{(city1.diversityIndex - city2.diversityIndex).toFixed(3)}</td>
           </tr>
           <tr>
-            <td className="p-3 text-sm font-medium text-gray-700 dark:text-gray-300">Spatial Pattern (NNI)</td>
-            <td className="p-3 text-center text-sm font-mono text-blue-900 dark:text-blue-400 font-bold">{city1.spatialPattern.toFixed(4)}</td>
-            <td className="p-3 text-center text-sm font-mono text-blue-900 dark:text-blue-400 font-bold">{city2.spatialPattern.toFixed(4)}</td>
-            <td className="p-3 text-center text-sm font-mono font-bold text-gray-900 dark:text-white">{(city1.spatialPattern - city2.spatialPattern).toFixed(4)}</td>
+            <td className="p-3 text-sm font-medium text-mineral-700 dark:text-mineral-300">Spatial Pattern (NNI)</td>
+            <td className="p-3 text-center text-sm tabular-nums text-forest-900 dark:text-forest-400 font-bold">{city1.spatialPattern.toFixed(4)}</td>
+            <td className="p-3 text-center text-sm tabular-nums text-forest-900 dark:text-forest-400 font-bold">{city2.spatialPattern.toFixed(4)}</td>
+            <td className="p-3 text-center text-sm tabular-nums font-bold text-mineral-900 dark:text-white">{(city1.spatialPattern - city2.spatialPattern).toFixed(4)}</td>
           </tr>
         </tbody>
       </table>
@@ -681,13 +630,13 @@ const StatisticalTable = ({ city1, city2 }) => {
 const ExportButton = ({ onClick, title, description }) => (
   <button
     onClick={onClick}
-    className="p-4 bg-blue-800 border border-blue-700 hover:bg-blue-700 transition-colors text-white rounded-md"
+    className="p-3 text-left bg-white dark:bg-mineral-800 border border-mineral-300 dark:border-mineral-700 hover:border-forest-500 transition-colors rounded-md"
   >
     <div className="flex items-center gap-3 mb-2">
       <Download size={16} />
       <span className="font-bold">{title}</span>
     </div>
-    <div className="text-sm text-blue-200">
+    <div className="text-sm text-mineral-600 dark:text-mineral-300">
       {description}
     </div>
   </button>

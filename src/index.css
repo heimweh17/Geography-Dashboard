@@ -57,11 +57,115 @@
 .mobile-tools { background: #173d3c; padding: 5px; gap: 4px; z-index: 1000; }
 .mobile-tools button { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; color: #eef5f2; padding: 8px; border-radius: 4px; }
 .mobile-tools button[aria-expanded=true], .mobile-tools button[aria-pressed=true] { background: #e5f0eb; color: #173d3c; }
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .mobile-tools { display: flex; }
   .workspace-panel { top: 50px; }
 }
 :focus-visible { outline: 2px solid #258e82; outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}
+
+:root {
+  --paper: #fff;
+  --wash: #f4f7f3;
+  --ink: #22372d;
+  --quiet: #52665b;
+  --edge: #c9d5cc;
+  --accent: #306e56;
+  color-scheme: light;
+}
+:root.dark {
+  --paper: #1c2821;
+  --wash: #233329;
+  --ink: #e5eee6;
+  --quiet: #b5c7b9;
+  --edge: #405348;
+  --accent: #a0c0ae;
+  color-scheme: dark;
+}
+body { color: var(--ink); font-family: "Segoe UI", system-ui, sans-serif; }
+input[type=range], input[type=checkbox] { accent-color: var(--accent); }
+input[type=range] { appearance: auto; }
+.workspace-dialog {
+  padding: 0;
+  width: min(28rem, calc(100% - 2rem));
+  max-width: none;
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--edge);
+  border-radius: 12px;
+  box-shadow: 0 16px 68px #0d241d38;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.workspace-dialog::backdrop { background: rgb(18 34 26 / 49%); }
+.workspace-dialog.dialog-reading { width: min(44rem, calc(100% - 2rem)); }
+.workspace-dialog.dialog-report { width: min(70rem, calc(100% - 2rem)); }
+.workspace-dialog > div {
+  width: 100%; max-width: none; max-height: none;
+  background: var(--paper); border: none; border-radius: 0; box-shadow: none;
+}
+.dialog-heading {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 16px 22px; border-bottom: 1px solid var(--edge); background: var(--wash);
+}
+.dialog-heading h1, .dialog-heading h2, .dialog-heading .dialog-title {
+  color: var(--ink); font-size: 1.15rem; font-weight: 650; letter-spacing: -.02em;
+}
+.dialog-heading button[aria-label=Close], .workspace-dialog button[aria-label=Close] {
+  flex-shrink: 0; display: inline-grid; place-items: center;
+  height: 34px; min-width: 34px; border-radius: 6px; color: var(--quiet);
+}
+.workspace-dialog button[aria-label=Close]:hover { background: var(--edge); }
+.workspace-dialog :where(input:not([type=range]):not([type=checkbox]),textarea,select) {
+  min-width: 0; border-radius: 6px;
+}
+.workspace-dialog button { transition: background-color .14s, border-color .14s; }
+.workspace-dialog :is(input,button,textarea,select):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.compare-config { padding: 22px; }
+.compare-fields { display: grid; grid-template-columns: 1fr 1fr .85fr auto; gap: 18px; align-items: end; margin-bottom: 22px; }
+.compare-fields input:not([type=range]), .compare-fields button { height: 42px; }
+.compare-fields button { padding: 0 18px; font-size: .875rem; }
+.layer-options { display: flex; gap: 6px; flex-wrap: wrap; }
+.layer-options button { padding: 5px 11px; border-radius: 20px; text-transform: capitalize; }
+.layer-options button[aria-pressed=true] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.place-symbol, .location-symbol { display: grid; place-items: center; background: none; }
+.place-symbol::after, .location-symbol::after {
+  content: ''; width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid #fff; background: #316b52; box-shadow: 0 0 0 1px #254c3c96;
+}
+.location-symbol::after { width: 16px; height: 16px; border-radius: 4px; background: #755b39; }
+.leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--paper); color: var(--ink); }
+.leaflet-popup-content-wrapper { border-radius: 8px; }
+.leaflet-popup-content { font: .85rem/1.45 "Segoe UI", system-ui, sans-serif; }
+.leaflet-container a { color: #2b6652; }
+.leaflet-container a.leaflet-popup-close-button { color: var(--quiet); }
+@media (max-width: 767px) {
+  .compare-fields { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .workspace-dialog, .workspace-dialog.dialog-reading, .workspace-dialog.dialog-report { width: calc(100% - 16px); max-height: calc(100dvh - 16px); }
+  .compare-config, .dialog-heading { padding: 14px 16px; }
+  .layer-options button { min-height: 32px; }
+}
+.symbol-health::after { background: #967153; border-radius: 3px; }
+.symbol-education::after { background: #62798b; border-radius: 3px; transform: rotate(45deg); }
+.symbol-other::after { background: #758267; }
+.tool-rail h1 { letter-spacing: -.035em; }
+.tool-rail .city-search { border-top: 1px solid var(--edge); padding-top: 1rem; }
+.workspace-panel input { accent-color: var(--accent); }
+.workspace-dialog .compare-fields :where(input,button) { max-width: 100%; }
+.workspace-dialog .compare-fields > div { min-width: 0; }
+.category-list h3 { font-size: .9rem; font-weight: 650; margin-bottom: 6px; }
+.category-list button { display: grid; width: 100%; grid-template-columns: 1fr auto; gap: 5px; align-items: baseline; padding: 6px 0; text-align: left; font-size: .85rem; text-transform: capitalize; }
+.category-list button:hover { color: var(--accent); }
+.category-list strong { font-variant-numeric: tabular-nums; }
+.category-track { display: block; grid-column: 1 / -1; height: 4px; border-radius: 2px; overflow: hidden; background: var(--edge); }
+.category-track > span { display: block; height: 100%; background: var(--accent); }
+.comparison-notes { padding-left: 1.15rem; list-style: disc; font-size: .9rem; line-height: 1.55; }
+.comparison-notes li + li { margin-top: .45rem; }
+.comparison-notes li::marker { color: var(--accent); }
+@media (prefers-reduced-motion: reduce) {
+  .workspace-dialog button { transition: none; }
 }

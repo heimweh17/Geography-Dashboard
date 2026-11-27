@@ -1,3 +1,4 @@
+import WorkspaceDialog from './WorkspaceDialog';
 import { parseFileToPoints } from '../utlis/datasetPreview';
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -151,18 +152,18 @@ const Sidebar = ({
   return (
     <>
       {/* SIDEBAR CONTENT */}
-      <div className="tool-rail w-full md:w-80 bg-white dark:bg-blue-950 border-r border-blue-200 dark:border-blue-800 flex flex-col h-full overflow-y-auto transition-colors duration-300 shadow-xl relative">
+      <div className="tool-rail w-full lg:w-80 bg-white dark:bg-forest-950 border-r border-forest-200 dark:border-forest-800 flex flex-col h-full overflow-y-auto transition-colors duration-300 shadow-xl relative">
         <div className="p-6">
           
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-blue-900 dark:text-blue-200 flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-forest-900 dark:text-forest-200 flex items-center gap-2">
               <Map size={24} />
               GeoAnalytica
             </h1>
             <button 
               aria-label="Switch color theme" onClick={toggleTheme}
-              className="p-2 border border-blue-300 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-900 text-blue-700 dark:text-blue-300 transition-colors rounded-md"
+              className="p-2 border border-forest-300 dark:border-forest-700 hover:bg-forest-100 dark:hover:bg-forest-900 text-forest-700 dark:text-forest-300 transition-colors rounded-md"
             >
               {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
@@ -175,7 +176,7 @@ const Sidebar = ({
             <input
               type="text"
               id="city-query" placeholder="City or town"
-              className="w-full p-3 pl-10 border border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900 dark:text-blue-100 focus:ring-2 focus:ring-blue-600 outline-none rounded-md"
+              className="w-full p-3 pl-10 border border-forest-300 dark:border-forest-700 bg-forest-50 dark:bg-forest-900 dark:text-forest-100 focus:ring-2 focus:ring-forest-600 outline-none rounded-md"
               value={cityInput}
               onChange={(e) => setCityInput(e.target.value)}
             />
@@ -187,14 +188,14 @@ const Sidebar = ({
             
             {/* Data Layers Dropdown */}
             <div>
-              <label className="block text-sm font-bold text-blue-900 dark:text-blue-200 mb-2">
+              <label className="block text-sm font-bold text-forest-900 dark:text-forest-200 mb-2">
                 Map layers
               </label>
               <div className="relative">
                 <button
                   type="button"
                   aria-expanded={showDropdown} onClick={() => setShowDropdown(!showDropdown)}
-                  className="w-full p-3 border border-blue-300 dark:border-blue-700 bg-white dark:bg-blue-900 text-blue-900 dark:text-blue-100 flex items-center justify-between rounded-md hover:bg-blue-50 dark:hover:bg-blue-800 transition-colors"
+                  className="w-full p-3 border border-forest-300 dark:border-forest-700 bg-white dark:bg-forest-900 text-forest-900 dark:text-forest-100 flex items-center justify-between rounded-md hover:bg-forest-50 dark:hover:bg-forest-800 transition-colors"
                 >
                   <span className="text-sm">
                     {selectedAmenities.length === 1 
@@ -206,17 +207,17 @@ const Sidebar = ({
                 </button>
                 
                 {showDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-blue-900 border border-blue-300 dark:border-blue-700 shadow-lg z-50 max-h-80 overflow-y-auto rounded-md">
-                    <div className="p-3 border-b border-blue-200 dark:border-blue-700 flex gap-2">
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-forest-900 border border-forest-300 dark:border-forest-700 shadow-lg z-50 max-h-80 overflow-y-auto rounded-md">
+                    <div className="p-3 border-b border-forest-200 dark:border-forest-700 flex gap-2">
                       <button
                         onClick={selectAllAmenities}
-                        className="px-3 py-1 text-xs bg-blue-600 text-white hover:bg-blue-700 transition-colors rounded-md"
+                        className="px-3 py-1 text-xs bg-forest-600 text-white hover:bg-forest-700 transition-colors rounded-md"
                       >
                         Select All
                       </button>
                       <button
                         onClick={clearAllAmenities}
-                        className="px-3 py-1 text-xs bg-blue-200 dark:bg-blue-800 text-blue-900 dark:text-blue-200 hover:bg-blue-300 dark:hover:bg-blue-700 transition-colors rounded-md"
+                        className="px-3 py-1 text-xs bg-forest-200 dark:bg-forest-800 text-forest-900 dark:text-forest-200 hover:bg-forest-300 dark:hover:bg-forest-700 transition-colors rounded-md"
                       >
                         Reset layers
                       </button>
@@ -226,15 +227,15 @@ const Sidebar = ({
                       {DATA_LAYERS.map((amenity) => (
                         <label
                           key={amenity}
-                          className="flex items-center gap-2 p-2 hover:bg-blue-50 dark:hover:bg-blue-800 cursor-pointer rounded-md transition-colors"
+                          className="flex items-center gap-2 p-2 hover:bg-forest-50 dark:hover:bg-forest-800 cursor-pointer rounded-md transition-colors"
                         >
                           <input
                             type="checkbox"
                             checked={selectedAmenities.includes(amenity)}
                             onChange={() => toggleAmenity(amenity)}
-                            className="w-4 h-4 text-blue-600 border-blue-300 focus:ring-blue-500 rounded"
+                            className="w-4 h-4 text-forest-600 border-forest-300 focus:ring-forest-500 rounded"
                           />
-                          <span className="text-sm text-blue-900 dark:text-blue-100 capitalize">
+                          <span className="text-sm text-forest-900 dark:text-forest-100 capitalize">
                             {amenity.replace(/_/g, ' ')}
                           </span>
                         </label>
@@ -248,7 +249,7 @@ const Sidebar = ({
 
             {/* Search Radius */}
             <div>
-              <label className="block text-sm font-bold text-blue-900 dark:text-blue-200 mb-2">
+              <label className="block text-sm font-bold text-forest-900 dark:text-forest-200 mb-2">
                 Search Radius: {searchRadius / 1000} km
               </label>
               <input 
@@ -261,17 +262,17 @@ const Sidebar = ({
                 disabled={!!customPolygon}
                 className={`w-full h-2 appearance-none cursor-pointer rounded-sm ${
                   customPolygon 
-                    ? 'bg-gray-300 dark:bg-gray-600' 
-                    : 'bg-blue-200 dark:bg-blue-800'
+                    ? 'bg-mineral-300 dark:bg-mineral-600'
+                    : 'bg-forest-200 dark:bg-forest-800'
                 }`}
                 style={{
                   background: customPolygon 
                     ? undefined 
-                    : `linear-gradient(to right, #1d4ed8 0%, #3b82f6 50%, #60a5fa 100%)`
+                    : `var(--rail-line)`
                 }}
               />
               {customPolygon && (
-                <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                <p className="text-xs text-forest-600 dark:text-forest-400 mt-1">
                   Radius disabled (Using Custom Area)
                 </p>
               )}
@@ -283,8 +284,8 @@ const Sidebar = ({
                 aria-pressed={showHeatmap} onClick={toggleHeatmap}
                 className={`flex items-center justify-center gap-2 p-3 border transition-colors rounded-md ${
                   showHeatmap 
-                    ? 'bg-orange-100 dark:bg-orange-900/30 border-orange-500 text-orange-700 dark:text-orange-300' 
-                    : 'bg-white dark:bg-blue-900 border-blue-300 dark:border-blue-700 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-800'
+                    ? 'bg-forest-100 dark:bg-forest-900/30 border-forest-500 text-forest-700 dark:text-forest-300'
+                    : 'bg-white dark:bg-forest-900 border-forest-300 dark:border-forest-700 text-forest-700 dark:text-forest-300 hover:bg-forest-50 dark:hover:bg-forest-800'
                 }`}
               >
                 <Layers size={18} />
@@ -293,7 +294,7 @@ const Sidebar = ({
 
               <button
                 onClick={onExport}
-                className="flex items-center justify-center gap-2 p-3 bg-green-700 dark:bg-green-800 text-white hover:bg-green-800 dark:hover:bg-green-700 transition-colors rounded-md border border-green-600"
+                className="flex items-center justify-center gap-2 p-3 bg-forest-700 dark:bg-forest-800 text-white hover:bg-forest-800 dark:hover:bg-forest-700 transition-colors rounded-md border border-forest-600"
                 disabled={loading || !canExport}
               >
                 <Download size={18} />
@@ -302,7 +303,7 @@ const Sidebar = ({
               
               <button
                 onClick={() => setShowComparisonModal(true)}
-                className="flex items-center justify-center gap-2 p-3 bg-blue-700 dark:bg-blue-800 text-white hover:bg-blue-800 dark:hover:bg-blue-700 transition-colors rounded-md border border-blue-600"
+                className="flex items-center justify-center gap-2 p-3 bg-forest-700 dark:bg-forest-800 text-white hover:bg-forest-800 dark:hover:bg-forest-700 transition-colors rounded-md border border-forest-600"
               >
                 <TrendingUp size={18} />
                 Compare Cities
@@ -319,7 +320,7 @@ const Sidebar = ({
               />
               <button
                 onClick={handleUploadClick}
-                className="flex items-center justify-center gap-2 p-3 bg-purple-700 dark:bg-purple-800 text-white hover:bg-purple-800 dark:hover:bg-purple-700 transition-colors rounded-md border border-purple-600 disabled:opacity-60"
+                className="flex items-center justify-center gap-2 p-3 bg-forest-700 dark:bg-forest-800 text-white hover:bg-forest-800 dark:hover:bg-forest-700 transition-colors rounded-md border border-forest-600 disabled:opacity-60"
                 disabled={uploading || analysisLoading}
               >
                 {uploading ? 'Uploading...' : 'Upload CSV or GeoJSON'}
@@ -328,7 +329,7 @@ const Sidebar = ({
                 <p className="text-sm text-red-600 dark:text-red-400">{uploadError}</p>
               )}
               {datasetInfo && (
-                <div className="p-3 bg-blue-50 dark:bg-blue-900/40 border border-blue-300 dark:border-blue-700 rounded-md text-sm text-blue-900 dark:text-blue-100">
+                <div className="p-3 bg-forest-50 dark:bg-forest-900/40 border border-forest-300 dark:border-forest-700 rounded-md text-sm text-forest-900 dark:text-forest-100">
                   <div><strong>Dataset ID:</strong> {datasetInfo.dataset_id}</div>
                   <div><strong>Points:</strong> {datasetInfo.n_points}</div>
                 </div>
@@ -336,52 +337,52 @@ const Sidebar = ({
 
               {/* Analysis Panel */}
               {datasetInfo && (
-                <div className="p-3 bg-white dark:bg-blue-900 border border-blue-300 dark:border-blue-700 rounded-md space-y-2">
+                <div className="p-3 bg-white dark:bg-forest-900 border border-forest-300 dark:border-forest-700 rounded-md space-y-2">
                   <div className="grid grid-cols-2 gap-2">
-                    <label className="text-xs text-blue-900 dark:text-blue-100">
+                    <label className="text-xs text-forest-900 dark:text-forest-100">
                       Grid cell size
                       <input
                         type="number"
                         step="0.001"
                         value={gridCellSize}
                         onChange={(e) => setGridCellSize(e.target.value)}
-                        className="w-full mt-1 p-2 border border-blue-300 dark:border-blue-700 bg-white dark:bg-blue-950 text-blue-900 dark:text-blue-100 rounded-md"
+                        className="w-full mt-1 p-2 border border-forest-300 dark:border-forest-700 bg-white dark:bg-forest-950 text-forest-900 dark:text-forest-100 rounded-md"
                       />
                     </label>
-                    <label className="text-xs text-blue-900 dark:text-blue-100">
+                    <label className="text-xs text-forest-900 dark:text-forest-100">
                       DBSCAN eps (km)
                       <input
                         type="number"
                         step="0.1"
                         value={dbscanEpsKm}
                         onChange={(e) => setDbscanEpsKm(e.target.value)}
-                        className="w-full mt-1 p-2 border border-blue-300 dark:border-blue-700 bg-white dark:bg-blue-950 text-blue-900 dark:text-blue-100 rounded-md"
+                        className="w-full mt-1 p-2 border border-forest-300 dark:border-forest-700 bg-white dark:bg-forest-950 text-forest-900 dark:text-forest-100 rounded-md"
                       />
                     </label>
-                    <label className="text-xs text-blue-900 dark:text-blue-100">
+                    <label className="text-xs text-forest-900 dark:text-forest-100">
                       Min samples
                       <input
                         type="number"
                         min="1"
                         value={dbscanMinSamples}
                         onChange={(e) => setDbscanMinSamples(e.target.value)}
-                        className="w-full mt-1 p-2 border border-blue-300 dark:border-blue-700 bg-white dark:bg-blue-950 text-blue-900 dark:text-blue-100 rounded-md"
+                        className="w-full mt-1 p-2 border border-forest-300 dark:border-forest-700 bg-white dark:bg-forest-950 text-forest-900 dark:text-forest-100 rounded-md"
                       />
                     </label>
-                    <label className="text-xs text-blue-900 dark:text-blue-100">
+                    <label className="text-xs text-forest-900 dark:text-forest-100">
                       Category field
                       <input
                         type="text"
                         value={categoryField}
                         onChange={(e) => setCategoryField(e.target.value)}
-                        className="w-full mt-1 p-2 border border-blue-300 dark:border-blue-700 bg-white dark:bg-blue-950 text-blue-900 dark:text-blue-100 rounded-md"
+                        className="w-full mt-1 p-2 border border-forest-300 dark:border-forest-700 bg-white dark:bg-forest-950 text-forest-900 dark:text-forest-100 rounded-md"
                       />
                     </label>
                   </div>
 
                   <button
                     onClick={handleRunAnalysis}
-                    className="w-full flex items-center justify-center gap-2 p-3 bg-indigo-700 dark:bg-indigo-800 text-white hover:bg-indigo-800 dark:hover:bg-indigo-700 transition-colors rounded-md border border-indigo-600 disabled:opacity-60"
+                    className="w-full flex items-center justify-center gap-2 p-3 bg-forest-700 dark:bg-forest-800 text-white hover:bg-forest-800 dark:hover:bg-forest-700 transition-colors rounded-md border border-forest-600 disabled:opacity-60"
                     disabled={analysisLoading}
                   >
                     {analysisLoading ? 'Running Analysis...' : 'Run Analysis'}
@@ -405,13 +406,13 @@ const Sidebar = ({
         </div>
         
         <div className="rail-account">
-          <div className="mb-6 pb-4 border-b border-blue-200 dark:border-blue-700">
+          <div className="mb-6 pb-4 border-b border-forest-200 dark:border-forest-700">
             {user ? (
               <>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={onShowSavedPlaces}
-                    className="flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
+                    className="flex items-center justify-center gap-2 p-3 bg-forest-600 hover:bg-forest-700 text-white rounded-lg transition font-semibold"
                   >
                     <Star size={18} />
                     Saved
@@ -419,7 +420,7 @@ const Sidebar = ({
 
                   <button
                     onClick={() => setShowProfile(true)}
-                    className="flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
+                    className="flex items-center justify-center gap-2 p-3 bg-forest-600 hover:bg-forest-700 text-white rounded-lg transition font-semibold"
                   >
                     <User size={18} />
                     Profile
@@ -427,7 +428,7 @@ const Sidebar = ({
                 </div>
                 <button
                   onClick={signOut}
-                  className="mt-2 w-full flex items-center justify-center gap-2 p-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 transition rounded-md border border-blue-300 dark:border-blue-700"
+                  className="mt-2 w-full flex items-center justify-center gap-2 p-2 bg-forest-100 dark:bg-forest-900 text-forest-800 dark:text-forest-200 hover:bg-forest-200 dark:hover:bg-forest-800 transition rounded-md border border-forest-300 dark:border-forest-700"
                 >
                   Logout
                 </button>
@@ -435,7 +436,7 @@ const Sidebar = ({
             ) : (
               <button
                 onClick={() => setShowLoginModal(true)}
-                className="w-full flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
+                className="w-full flex items-center justify-center gap-2 p-3 bg-forest-600 hover:bg-forest-700 text-white rounded-lg transition font-semibold"
               >
                 <User size={18} />
                 Sign In / Sign Up
@@ -443,13 +444,13 @@ const Sidebar = ({
             )}
           </div></div>
         {/* Footer */}
-        <div className="mt-auto p-6 text-xs text-blue-600 dark:text-blue-400 text-center border-t border-blue-200 dark:border-blue-800">
+        <div className="mt-auto p-6 text-xs text-forest-600 dark:text-forest-400 text-center border-t border-forest-200 dark:border-forest-800">
           <p className="mb-1">Data © OpenStreetMap contributors</p>
           <p>
             Made by{' '}
             <button 
               onClick={() => setShowAuthorModal(true)} 
-              className="text-blue-700 dark:text-blue-300 font-bold hover:underline"
+              className="text-forest-700 dark:text-forest-300 font-bold hover:underline"
             >
               Alex Liu
             </button>
@@ -471,54 +472,54 @@ const Sidebar = ({
           />
 
           {showAuthorModal && (
-            <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-              <div className="bg-white dark:bg-blue-950 border-2 border-blue-300 dark:border-blue-700 shadow-2xl w-full max-w-sm relative p-6 rounded-md">
+            <WorkspaceDialog label="About GeoAnalytica" size="form" onClose={() => setShowAuthorModal(false)}>
+              <div className="bg-white dark:bg-forest-950 border border-forest-300 dark:border-forest-700 shadow-2xl w-full max-w-sm relative p-6 rounded-md">
                 <button 
-                  onClick={() => setShowAuthorModal(false)}
-                  className="absolute top-4 right-4 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-200"
+                  aria-label="Close" onClick={() => setShowAuthorModal(false)}
+                  className="absolute top-4 right-4 text-forest-500 hover:text-forest-700 dark:text-forest-400 dark:hover:text-forest-200"
                 >
                   <X size={24} />
                 </button>
                 
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 border-2 border-blue-400 dark:border-blue-600 flex items-center justify-center mx-auto mb-4 text-2xl font-bold rounded-md">
+                  <div className="w-16 h-16 bg-forest-200 dark:bg-forest-800 text-forest-800 dark:text-forest-200 border border-forest-400 dark:border-forest-600 flex items-center justify-center mx-auto mb-4 text-2xl font-bold rounded-md">
                     AL
                   </div>
-                  <h2 className="text-2xl font-bold text-blue-900 dark:text-blue-100 mb-1">Alex Liu</h2>
-                  <p className="text-sm text-blue-600 dark:text-blue-400 mb-6">Full Stack Developer & GIS Analyst</p>
+                  <h2 className="text-2xl font-bold text-forest-900 dark:text-forest-100 mb-1">Alex Liu</h2>
+                  <p className="text-sm text-forest-600 dark:text-forest-400 mb-6">Full Stack Developer & GIS Analyst</p>
                   
                   <div className="space-y-4 text-left">
                     <a 
                       href="mailto:haozhouliu17@gmail.com" 
-                      className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-800 transition rounded-md"
+                      className="flex items-center gap-3 p-3 bg-forest-50 dark:bg-forest-900/50 border border-forest-200 dark:border-forest-700 hover:bg-forest-100 dark:hover:bg-forest-800 transition rounded-md"
                     >
-                      <Mail className="text-blue-600" size={20} />
-                      <span className="text-blue-800 dark:text-blue-200">haozhouliu17@gmail.com</span>
+                      <Mail className="text-forest-600" size={20} />
+                      <span className="text-forest-800 dark:text-forest-200">haozhouliu17@gmail.com</span>
                     </a>
                     
                     <a 
                       href="https://github.com/heimweh17" 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-800 transition rounded-md"
+                      className="flex items-center gap-3 p-3 bg-forest-50 dark:bg-forest-900/50 border border-forest-200 dark:border-forest-700 hover:bg-forest-100 dark:hover:bg-forest-800 transition rounded-md"
                     >
-                      <Github className="text-blue-800 dark:text-blue-200" size={20} />
-                      <span className="text-blue-800 dark:text-blue-200">github.com/heimweh17</span>
+                      <Github className="text-forest-800 dark:text-forest-200" size={20} />
+                      <span className="text-forest-800 dark:text-forest-200">github.com/heimweh17</span>
                     </a>
                     
                     <a 
                       href="https://aliu.me" 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/50 border border-blue-200 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-800 transition rounded-md"
+                      className="flex items-center gap-3 p-3 bg-forest-50 dark:bg-forest-900/50 border border-forest-200 dark:border-forest-700 hover:bg-forest-100 dark:hover:bg-forest-800 transition rounded-md"
                     >
-                      <Globe className="text-green-600" size={20} />
-                      <span className="text-blue-800 dark:text-blue-200">aliu.me</span>
+                      <Globe className="text-forest-600" size={20} />
+                      <span className="text-forest-800 dark:text-forest-200">aliu.me</span>
                     </a>
                   </div>
                 </div>
               </div>
-            </div>
+            </WorkspaceDialog>
           )}
 
           <ComparisonModal

@@ -16,57 +16,7 @@ import L from 'leaflet';
 import 'leaflet.heat';
 import { MAP_TILE_ATTRIBUTION, MAP_TILE_URL } from '../config/mapTiles';
 
-// ====== ICONS ======
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-
-let DefaultIcon = L.icon({
-  iconUrl: icon,
-  shadowUrl: iconShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
-L.Marker.prototype.options.icon = DefaultIcon;
-
-const UserIcon = L.icon({
-  iconUrl:
-    'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-  shadowUrl:
-    'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
-
-const createColoredIcon = (color) =>
-  L.icon({
-    iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
-    shadowUrl:
-      'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41],
-  });
-
-// amenity -> icon 映射
-const AMENITY_ICON_MAP = {
-  restaurant: createColoredIcon('red'),
-  cafe: createColoredIcon('blue'),
-  bar: createColoredIcon('orange'),
-  fast_food: createColoredIcon('yellow'),
-  pub: createColoredIcon('violet'),
-  hospital: createColoredIcon('green'),
-  pharmacy: createColoredIcon('green'),
-  school: createColoredIcon('orange'),
-  university: createColoredIcon('blue'),
-  library: createColoredIcon('violet'),
-  parking: createColoredIcon('blue'),
-  fuel: createColoredIcon('orange'),
-  bank: createColoredIcon('green'),
-  place_of_worship: createColoredIcon('violet'),
-};
+import { iconForPlace, locationIcon } from '../config/cartography';
 
 // ====== HELPERS ======
 const MapUpdater = ({ center }) => {
@@ -83,7 +33,7 @@ const HeatmapLayer = ({ points }) => {
   const map = useMap();
   useEffect(() => {
     if (!points || !points.length) return;
-    const heat = L.heatLayer(points, { radius: 25, blur: 15 }).addTo(map);
+    const heat = L.heatLayer(points, { radius: 25, blur: 15, gradient: { 0.25: "#c5d6b0", 0.55: "#83a47c", 0.8: "#48856c", 1: "#194c3d" } }).addTo(map);
     return () => {
       map.removeLayer(heat);
     };
@@ -161,7 +111,7 @@ const MapComponent = ({
             onDeleted={onShapeDeleted}
             draw={{
               rectangle: false,
-              polygon: true,
+              polygon: { shapeOptions: { color: '#326b58' } },
               circle: false,
               circlemarker: false,
               marker: false,
@@ -177,20 +127,7 @@ const MapComponent = ({
             center={center}
             radius={searchRadius}
             pathOptions={{
-              color: 'blue',
-              fillOpacity: 0.05,
-              weight: 1,
-              dashArray: '5, 5',
-            }}
-          />
-        )}
-        {/* SEARCH RADIUS - Hide when viewing saved place */}
-        {!customPolygon && center && !savedPlaceView && (
-          <Circle
-            center={center}
-            radius={searchRadius}
-            pathOptions={{
-              color: 'blue',
+              color: '#326b58',
               fillOpacity: 0.05,
               weight: 1,
               dashArray: '5, 5',
@@ -199,7 +136,7 @@ const MapComponent = ({
         )}
         {/* USER LOCATION */}
         {userLocation && Array.isArray(userLocation) && (
-          <Marker position={userLocation} icon={UserIcon}>
+          <Marker position={userLocation} icon={locationIcon}>
             <Popup>You are here</Popup>
           </Marker>
         )}
@@ -208,7 +145,7 @@ const MapComponent = ({
         {routeData && routeData.coordinates && (
           <Polyline
             positions={routeData.coordinates}
-            color="red"
+            color="#755b39"
             weight={4}
             opacity={0.7}
             dashArray="10, 10"
@@ -229,14 +166,11 @@ const MapComponent = ({
               return null;
             }
 
-            const amenityType = tags.amenity;
-            const markerIcon = AMENITY_ICON_MAP[amenityType] || DefaultIcon;
-
             return (
               <Marker
                 key={item.id}
                 position={[lat, lon]}
-                icon={markerIcon}
+                icon={iconForPlace(tags)}
                 eventHandlers={{
                   click: () => onMarkerClick(item, false),
                 }}
@@ -247,15 +181,15 @@ const MapComponent = ({
                       {tags.name || 'Unnamed'}
                     </h3>
                     {tags.cuisine && (
-                      <p className="text-xs uppercase text-gray-500 mb-1">
+                      <p className="text-xs text-mineral-500 mb-1">
                         {tags.cuisine}
                       </p>
                     )}
                     <button
-                      className="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white text-xs py-1.5 px-2 rounded transition"
+                      className="mt-2 w-full bg-forest-600 hover:bg-forest-700 text-white text-xs py-1.5 px-2 rounded transition"
                       onClick={() => onMarkerClick(item, true)}
                     >
-                      🚗 Get Route
+                      Get Route
                     </button>
                   </div>
                 </Popup>
@@ -267,25 +201,25 @@ const MapComponent = ({
 
       {/* ROUTE INFO BOX */}
       {routeData && (
-        <div className="absolute bottom-6 right-4 z-[1000] bg-white dark:bg-gray-800 p-4 rounded-lg shadow-xl border-l-4 border-blue-500 w-64 animate-fade-in-up">
+        <div className="absolute bottom-6 right-4 z-[1000] bg-white dark:bg-mineral-800 p-4 rounded-lg shadow-xl border-l-4 border-forest-500 w-64 animate-fade-in-up">
           <div className="flex justify-between items-start mb-2">
-            <h4 className="font-bold text-gray-800 dark:text-white">Trip Info</h4>
+            <h4 className="font-bold text-mineral-800 dark:text-white">Trip Info</h4>
             <button
               onClick={onClearRoute}
-              className="text-gray-400 hover:text-red-500 transition"
+              className="text-mineral-400 hover:text-red-500 transition"
             >
               ✕
             </button>
           </div>
-          <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300">
-            <span>🚗 Drive Time:</span>
-            <span className="font-mono font-bold">
+          <div className="flex justify-between text-sm text-mineral-600 dark:text-mineral-300">
+            <span>Drive Time:</span>
+            <span className="tabular-nums font-bold">
               {Math.round(routeData.duration / 60)} min
             </span>
           </div>
-          <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 mt-1">
-            <span>📏 Distance:</span>
-            <span className="font-mono font-bold">
+          <div className="flex justify-between text-sm text-mineral-600 dark:text-mineral-300 mt-1">
+            <span>Distance:</span>
+            <span className="tabular-nums font-bold">
               {(routeData.distance / 1000).toFixed(1)} km
             </span>
           </div>

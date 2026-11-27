@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
+import WorkspaceDialog from './components/WorkspaceDialog';
 import orlandoSnapshot from './assets/orlando-restaurants.json';
 import { placeCategory } from './config/mapLayers';
 import { downloadCSV } from './utlis/exportUtils';
@@ -62,10 +63,10 @@ function App() {
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
-      document.body.style.backgroundColor = '#0c1e3e';
+      document.body.style.backgroundColor = '#142820';
     } else {
       document.documentElement.classList.remove('dark');
-      document.body.style.backgroundColor = '#f1f5f9';
+      document.body.style.backgroundColor = '#f6f8f6';
     }
   }, [isDarkMode]);
 
@@ -316,10 +317,10 @@ function App() {
       : `${amenities.length} layers`;
 
   return (
-    <div className="flex flex-col md:flex-row h-dvh w-full overflow-hidden bg-blue-50 dark:bg-blue-950 text-blue-900 dark:text-blue-100 font-sans">
+    <div className="flex flex-col lg:flex-row h-dvh w-full overflow-hidden bg-forest-50 dark:bg-forest-950 text-forest-900 dark:text-forest-100 font-sans">
       
       {/* Mobile Toggle Buttons */}
-      <nav aria-label="Workspace panels" className="mobile-tools md:hidden">
+      <nav aria-label="Workspace panels" className="mobile-tools lg:hidden">
         <button aria-expanded={showLeftSidebar} onClick={() => { setShowLeftSidebar(!showLeftSidebar); setShowRightSidebar(false); }}>
           <Menu size={17} /> Explore
         </button>
@@ -329,12 +330,12 @@ function App() {
 
       {/* Left Sidebar */}
       <div className={`
-        workspace-panel fixed md:relative
+        workspace-panel fixed lg:relative
         inset-y-0 left-0
         z-[999]
-        w-full md:w-80
+        w-full lg:w-80
         transform transition-transform duration-300 ease-in-out
-        ${showLeftSidebar ? 'translate-x-0' : 'invisible md:visible -translate-x-full md:translate-x-0'}
+        ${showLeftSidebar ? 'translate-x-0' : 'invisible lg:visible -translate-x-full lg:translate-x-0'}
       `}>
         <Sidebar key={user?.id ?? "guest"}
           onSearch={handleCitySearch}
@@ -384,18 +385,18 @@ function App() {
 
         {/* Selected Place Popup */}
         {selectedPlace && (
-          <div className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-80 z-[600] bg-white dark:bg-blue-950 border-2 border-blue-300 dark:border-blue-700 shadow-2xl p-4 rounded-md">
+          <div className="absolute bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-80 z-[600] bg-white dark:bg-forest-950 border border-forest-300 dark:border-forest-700 shadow-2xl p-4 rounded-md">
             
             {/* Saved Place Indicator */}
             {savedPlaceView && (
-              <div className="mb-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700 rounded flex items-center justify-between">
-                <span className="text-xs text-yellow-800 dark:text-yellow-300 font-semibold flex items-center gap-1">
-                  <Star size={14} className="fill-yellow-500 text-yellow-500" />
+              <div className="mb-3 p-2 bg-forest-50 dark:bg-forest-900/20 border border-forest-300 dark:border-forest-700 rounded flex items-center justify-between">
+                <span className="text-xs text-forest-800 dark:text-forest-300 font-semibold flex items-center gap-1">
+                  <Star size={14} className="fill-forest-500 text-forest-500" />
                   Viewing Saved Place
                 </span>
                 <button
                   onClick={closeSavedPlaceView}
-                  className="text-xs text-yellow-700 dark:text-yellow-400 hover:text-yellow-900 dark:hover:text-yellow-200 underline font-semibold"
+                  className="text-xs text-forest-700 dark:text-forest-400 hover:text-forest-900 dark:hover:text-forest-200 underline font-semibold"
                 >
                   Back to map
                 </button>
@@ -403,19 +404,19 @@ function App() {
             )}
 
             <div className="flex justify-between items-start mb-2">
-              <h3 className="font-bold text-sm md:text-base text-blue-900 dark:text-blue-100">
+              <h3 className="font-bold text-sm md:text-base text-forest-900 dark:text-forest-100">
                 {selectedPlace.tags?.name || 'Unnamed place'}
               </h3>
               <button
                 onClick={savedPlaceView ? closeSavedPlaceView : clearSelectedPlace}
-                className="text-blue-500 hover:text-red-600 text-sm"
+                className="text-forest-500 hover:text-red-600 text-sm"
               >
                 ✕
               </button>
             </div>
 
             {(selectedPlace.tags?.amenity || selectedPlace.tags?.cuisine) && (
-              <p className="text-xs text-blue-600 dark:text-blue-400 mb-1">
+              <p className="text-xs text-forest-600 dark:text-forest-400 mb-1">
                 {selectedPlace.tags?.amenity}
                 {selectedPlace.tags?.cuisine && ` · ${selectedPlace.tags.cuisine}`}
               </p>
@@ -424,7 +425,7 @@ function App() {
             {(selectedPlace.tags?.['addr:housenumber'] ||
               selectedPlace.tags?.['addr:street'] ||
               selectedPlace.tags?.['addr:city']) && (
-              <p className="text-xs text-blue-800 dark:text-blue-200 mb-1">
+              <p className="text-xs text-forest-800 dark:text-forest-200 mb-1">
                 📍
                 {[
                   selectedPlace.tags?.['addr:housenumber'],
@@ -437,34 +438,34 @@ function App() {
             )}
 
             {selectedPlace.tags?.phone && (
-              <p className="text-xs text-blue-800 dark:text-blue-200 mb-1">
+              <p className="text-xs text-forest-800 dark:text-forest-200 mb-1">
                 ☎ {selectedPlace.tags.phone}
               </p>
             )}
 
             {selectedPlace.tags?.opening_hours && (
-              <p className="text-xs text-blue-800 dark:text-blue-200 mb-1">
+              <p className="text-xs text-forest-800 dark:text-forest-200 mb-1">
                 ⏰ {selectedPlace.tags.opening_hours}
               </p>
             )}
 
             {selectedPlace.tags?.wheelchair && (
-              <p className="text-xs text-blue-800 dark:text-blue-200 mb-1">
+              <p className="text-xs text-forest-800 dark:text-forest-200 mb-1">
                 ♿ Wheelchair: {selectedPlace.tags.wheelchair}
               </p>
             )}
 
             {(selectedPlace.tags?.brand || selectedPlace.tags?.operator) && (
-              <p className="text-xs text-blue-800 dark:text-blue-200 mb-1">
+              <p className="text-xs text-forest-800 dark:text-forest-200 mb-1">
                 🏷 {selectedPlace.tags?.brand || selectedPlace.tags?.operator}
               </p>
             )}
 
             {/* Show saved notes if viewing saved place */}
             {savedPlaceView?.notes && (
-              <div className="mt-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
-                <p className="text-xs font-semibold text-yellow-800 dark:text-yellow-300 mb-1">Your Notes:</p>
-                <p className="text-xs text-gray-700 dark:text-gray-300">{savedPlaceView.notes}</p>
+              <div className="mt-3 p-3 bg-forest-50 dark:bg-forest-900/20 border border-forest-200 dark:border-forest-700 rounded-lg">
+                <p className="text-xs font-semibold text-forest-800 dark:text-forest-300 mb-1">Your Notes:</p>
+                <p className="text-xs text-mineral-700 dark:text-mineral-300">{savedPlaceView.notes}</p>
               </div>
             )}
 
@@ -472,7 +473,7 @@ function App() {
             {!savedPlaceView && (
               <button
                 onClick={() => handleSavePlace(selectedPlace)}
-                className="w-full mt-3 flex items-center justify-center gap-2 p-2.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition font-semibold shadow-md"
+                className="w-full mt-3 flex items-center justify-center gap-2 p-2.5 bg-forest-500 hover:bg-forest-600 text-white rounded-lg transition font-semibold shadow-md"
               >
                 <Star size={16} />
                 Save This Place
@@ -480,10 +481,10 @@ function App() {
             )}
 
             <details className="mt-3">
-              <summary className="text-xs text-blue-600 dark:text-blue-400 cursor-pointer font-medium">
+              <summary className="text-xs text-forest-600 dark:text-forest-400 cursor-pointer font-medium">
                 Show raw OSM tags
               </summary>
-              <pre className="mt-1 max-h-32 overflow-auto text-[10px] bg-blue-100 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 p-2 rounded-md">
+              <pre className="mt-1 max-h-32 overflow-auto text-[10px] bg-forest-100 dark:bg-forest-900 border border-forest-200 dark:border-forest-700 p-2 rounded-md">
                 {JSON.stringify(selectedPlace.tags, null, 2)}
               </pre>
             </details>
@@ -493,12 +494,12 @@ function App() {
 
       {/* Right Sidebar (Analytics) */}
       <div className={`
-        workspace-panel fixed md:relative
+        workspace-panel fixed lg:relative
         inset-y-0 right-0
         z-[999]
-        w-full md:w-80
+        w-full lg:w-80
         transform transition-transform duration-300 ease-in-out
-        ${showRightSidebar ? 'translate-x-0' : 'invisible md:visible translate-x-full md:translate-x-0'}
+        ${showRightSidebar ? 'translate-x-0' : 'invisible lg:visible translate-x-full lg:translate-x-0'}
       `}>
         <AnalyticsPanel
           data={filteredData}
@@ -516,7 +517,7 @@ function App() {
       {/* Overlay when sidebars are open on mobile */}
       {(showLeftSidebar || showRightSidebar) && (
         <div 
-          className="md:hidden fixed inset-0 bg-black/50 z-[998]"
+          className="lg:hidden fixed inset-0 bg-black/50 z-[998]"
           onClick={() => {
             setShowLeftSidebar(false);
             setShowRightSidebar(false);
@@ -547,22 +548,22 @@ function App() {
 
           {/* Login Prompt */}
           {showLoginPrompt && (
-            <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-              <div className="bg-white dark:bg-gray-900 w-full max-w-sm rounded-lg shadow-2xl border border-gray-300 dark:border-gray-700 p-6">
+            <WorkspaceDialog label="Sign in to save places" size="form" onClose={() => setShowLoginPrompt(false)}>
+              <div className="bg-white dark:bg-mineral-900 w-full max-w-sm rounded-lg shadow-2xl border border-mineral-300 dark:border-mineral-700 p-6">
                 <div className="text-center">
-                  <div className="w-16 h-16 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Star className="text-yellow-600" size={32} />
+                  <div className="w-16 h-16 bg-forest-100 dark:bg-forest-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Star className="text-forest-600" size={32} />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                  <h3 className="text-xl font-bold text-mineral-900 dark:text-mineral-100 mb-2">
                     Sign in to save places
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                  <p className="text-sm text-mineral-600 dark:text-mineral-400 mb-6">
                     Create an account to save your favorite locations and access them anytime.
                   </p>
                   <div className="flex gap-3">
                     <button
                       onClick={() => setShowLoginPrompt(false)}
-                      className="flex-1 p-2.5 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition font-semibold"
+                      className="flex-1 p-2.5 border border-mineral-300 dark:border-mineral-600 rounded-lg hover:bg-mineral-100 dark:hover:bg-mineral-800 transition font-semibold"
                     >
                       Cancel
                     </button>
@@ -571,14 +572,14 @@ function App() {
                         setShowLoginPrompt(false);
                         // User will need to click Sign In button in sidebar
                       }}
-                      className="flex-1 p-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
+                      className="flex-1 p-2.5 bg-forest-600 hover:bg-forest-700 text-white rounded-lg transition font-semibold"
                     >
                       OK
                     </button>
                   </div>
                 </div>
               </div>
-            </div>
+            </WorkspaceDialog>
           )}
         </>,
         document.body
